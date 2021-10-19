@@ -548,7 +548,7 @@ Gini Index=1-\sum_{i = 1}^{n}{(p_i)^2}
 ##           Mean of squared residuals: 16.4419
 ##                     % Var explained: 24.88</code></pre>
 <p> </p>
-<p>The result of this model shows that the three factors can together explain 21.71% of the total variance. This is not high, but with only three variables, it is also not bad. Still, more abiotic factors are recommended to add to this model to catch more variance. I use 500 trees (R’s default) to build this model, and caution is needed for the number of trees since too many trees may make the model overfitting. Therefore, checking the mean square errors of models created with the different number of trees is recommended.</p>
+<p>The result of this model shows that the three factors can together explain 24.88% of the total variance. This is not high, but with only three variables, it is also not bad. Still, more abiotic factors are recommended to add to this model to catch more variance. I use 500 trees (R’s default) to build this model, and caution is needed for the number of trees since too many trees may make the model overfitting. Therefore, checking the mean square errors of models created with the different number of trees is recommended.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">plot</span>(rf.stpi) <span class="co"># check the mean square error of models</span></a></code></pre></div>
 <p><img src="index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p> </p>
@@ -605,7 +605,7 @@ Gini Index=1-\sum_{i = 1}^{n}{(p_i)^2}
 ## SST    9.399700      548.2653
 ## Chl_a  9.368645      417.8289</code></pre>
 <p> </p>
-<p>The result shows the importance of variables calculated with the mean decrease in accuracy and with the Gini Index. They all suggest that light is the most important factor in driving the distribution of <em>S. pistillata</em> while the remaining two ones rank differently in the two means computing the importance.</p>
+<p>The result shows the importance of variables calculated with the mean decrease in accuracy and with the Gini Index. Both suggest that light is the most important factor in driving the distribution of <em>S. pistillata</em> followed by SST and the chlorophyll <em>a</em>.</p>
 <p>Now, we can try to validate this model with the testing set by calculating the residuals and the mean squared error.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1">pred.stpi &lt;-<span class="st"> </span><span class="kw">predict</span>(rf.stpi.min, <span class="dt">newdata=</span>stpi.test)</a>
 <a class="sourceLine" id="cb21-2" title="2">rf.resid.stpi &lt;-<span class="st"> </span>pred.stpi <span class="op">-</span><span class="st"> </span>stpi.test<span class="op">$</span>SP <span class="co"># the residuals</span></a>
@@ -662,7 +662,7 @@ Gini Index=1-\sum_{i = 1}^{n}{(p_i)^2}
 <p><img src="index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p> </p>
 <p>According to this map, <em>S. pistillata</em> tends to have higher cover in the north of Taiwan while the east and the south have less cover. Based on its distribution and the RF model, we can deduce that the environment of north Taiwan may have higher light intensity and also lower SST. However, in reality, we know that the north generally receives lower light intensity than the east and the south do if we sample at the same depth, this bias may be caused by the oversampling in the shallower water of the north.</p>
-<p>Overall, this RF model suggests that the three abiotic variables, SST, light at the bottom, and chlorophyll <em>a</em>, all positively contribute to the prediction of the distribution of <em>S</em>. pistillata* with the light does it better than the other two variables. With these three factors, we can already catch 21.95% of the total variance. Nonetheless, considering the number of observations and also the number of variables, this dataset is too small to build a very robust RF model. Further sample effort is needed to make this prediction stronger especially in places other than the shallow water in the north of Taiwan.</p>
+<p>Overall, this RF model suggests that the three abiotic variables, SST, light at the bottom, and chlorophyll <em>a</em>, all positively contribute to the prediction of the distribution of <em>S</em>. pistillata* with the light does it better than the other two variables. With these three factors, we can already catch 25.95% of the total variance. Nonetheless, considering the number of observations and also the number of variables, this dataset is too small to build a very robust RF model. Further sample effort is needed to make this prediction stronger especially in places other than the shallow water in the north of Taiwan.</p>
 <p> </p>
 <hr />
 </div>
