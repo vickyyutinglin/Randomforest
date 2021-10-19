@@ -542,7 +542,7 @@ Then, I can start to create the model.
 ~
 
 The result of this model shows that the three factors can together
-explain 21.71\% of the total variance. This is not high, but with only
+explain 24.88\% of the total variance. This is not high, but with only
 three variables, it is also not bad. Still, more abiotic factors are
 recommended to add to this model to catch more variance. I use 500 trees
 (R's default) to build this model, and caution is needed for the number
@@ -682,10 +682,9 @@ the function ``varImpPlot'' and'' importance''.
 ~
 
 The result shows the importance of variables calculated with the mean
-decrease in accuracy and with the Gini Index. They all suggest that
-light is the most important factor in driving the distribution of
-\emph{S. pistillata} while the remaining two ones rank differently in
-the two means computing the importance.
+decrease in accuracy and with the Gini Index. Both suggest that light is
+the most important factor in driving the distribution of \emph{S.
+pistillata} followed by SST and the chlorophyll \emph{a}.
 
 Now, we can try to validate this model with the testing set by
 calculating the residuals and the mean squared error.
@@ -850,7 +849,7 @@ Overall, this RF model suggests that the three abiotic variables, SST,
 light at the bottom, and chlorophyll \emph{a}, all positively contribute
 to the prediction of the distribution of \emph{S}. pistillata* with the
 light does it better than the other two variables. With these three
-factors, we can already catch 21.95\% of the total variance.
+factors, we can already catch 25.95\% of the total variance.
 Nonetheless, considering the number of observations and also the number
 of variables, this dataset is too small to build a very robust RF model.
 Further sample effort is needed to make this prediction stronger
