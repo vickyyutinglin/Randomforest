@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Yuting Vicky Lin" />
+
+
+<title>Advantages and Disadvantages of Random Forest in Modeling Species Distribution: From Theory to Practice</title>
+
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { background-color: #f8f8f8; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Stats & R!</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Random forest</a>
+</li>
+<li>
+  <a href="about.html">About Me</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Advantages and Disadvantages of Random Forest in Modeling Species Distribution: From Theory to Practice</h1>
+<h4 class="author">Yuting Vicky Lin</h4>
+<h4 class="date">2021/10/19</h4>
+
+</div>
+
+
+<hr />
+<div id="what-is-a-random-forest" class="section level1">
+<h1>What is a random forest?</h1>
+<p>Random forest (RF) is a supervised learning algorithm that needs data to train. As its name, RF is an assemble of many individual decision trees which act as classifiers. Each tree can make a decision, and the final decision is made based on the major votes (classification tree) or the average (regression tree) from all decision trees. It is commonly used to deal with classification, regression, or prediction tasks and also to measure the relative importance of the input variables. In addition, it is easy to use and the results it produces are usually good and quite straightforward. Combing all these features, it becomes one of the most used algorithms in machine learning.</p>
+<hr />
+</div>
+<div id="how-does-it-work" class="section level1">
+<h1>How does it work?</h1>
+<p>RF uses a bootstrapped procedure on the dataset to repeatedly create many subsets. Each of the subsets is later used to fit either a classification or a regression tree, and the final decision is made based on the votes or the average from those trees (Figure 1). That is, an optimal model can be arrived at by converging many classification and regression trees (CARTs) fitted by the bootstrapping samples. Based on this best model, we can make a prediction of the new observations. Here, I will explain step by step how does this algorithm work and terminologies should be known to understand this algorithm.</p>
+<div class="figure">
+<img src="Fig1.png" alt="Figure 1. The framework of the Random Forest algorithm" />
+<p class="caption"><strong>Figure 1.</strong> The framework of the Random Forest algorithm</p>
+</div>
+<p> </p>
+<div id="step" class="section level2">
+<h2>- Step</h2>
+<p>Assume I have a dataset (N) and the independent variables (M) that I think are important features to delineate those observations. By applying RF to this dataset, I can <strong>(1) find out the best model to fit this dataset, (2) predict the new observation according to this model, and (3) calculate the importance of those feature variables.</strong> These three tasks are the target to obtain to answer the research questions when most people use RF. The procedure of this algorithm is:</p>
+<ol style="list-style-type: decimal">
+<li>Build n Bootstrap replicates from the dataset N with the consistent amount of observations (with replacement). For each replicate, a CART will be created. That is, n is also the number of CARTs to grow.</li>
+<li>Divide each Bootstrap replicate into a training and a testing set. The amount of data in two sets can be 9:1, 8:2, 7:3, or any ratio, there is no fixed rule but depending on the performance of your resulted model.</li>
+<li>For each replicate, fit a CART to the training set. At each node of the tree, a permutation procedure randomly selecting m feature variables from the variable set (M) is conducted to find out the best split based on the Gini Index that can quantify the within-node entropy. After this CART is successfully grown, it would be validated with the testing set. The prediction error of the classification tree is measured by our-of-bag (bootstrapping) error while the one of regression tree is calculated by mean squared error.</li>
+<li>Ensemble n CARTs to find out the best model.</li>
+<li>Based on this model, a prediction can be made for the new observations.</li>
+</ol>
+<p> </p>
+</div>
+<div id="classification-and-regression-tree-cart" class="section level2">
+<h2>- Classification and regression tree (CART)</h2>
+<p>CART is a classifier used to sort the observations based on recursive binary decisions made by the given feature variables having the most information. However, how does the CART decide the binary decisions on each split? Before answering it, we have to know what is a Gini Index. Gini Index can measure the probability of a specific variable being incorrectly classified when randomly selected. This index is entropy-based, so their interpretation is similar. Gini Index ranges between 0 to 1, while 0 denotes that all the elements belong to a single class or there is only one class existing (pure), 1 denotes that all the elements randomly distribute among the classes (impure). Mathematically, it is expressed as:</p>
+<p><span class="math display">\[
+Gini Index=1-\sum_{i = 1}^{n}{(p_i)^2} 
+\]</span> where p<sub>i</sub> denotes the probability of an element being classified to a specific class.</p>
+<p>In each split of a tree, Gini Indexes for each of the variables randomly picked up from its variable set are calculated, and the one with the lowest Gini Index is chosen as the given split (Figure 2). For the variable part, the more the variable contributes to the prediction process, the more chances it would be retained as the split. While for the observation, the more binary decisions the CART makes, the more similar the feature variables of the subset groups (Figure 2). Nonetheless, more splits on a tree do not always let the model better, too many splits may lead to the overfitting of the model.</p>
+<div class="figure">
+<img src="Fig2.png" alt="Figure 2. A CART trying to classify corals based on their morphology and color. The entropy of the dataset decreases when each time a split is made." />
+<p class="caption"><strong>Figure 2.</strong> A CART trying to classify corals based on their morphology and color. The entropy of the dataset decreases when each time a split is made.</p>
+</div>
+<p> </p>
+</div>
+<div id="variable-importance" class="section level2">
+<h2>- Variable importance</h2>
+<p>An excellent piece of information that we can derive from RF is the relative importance of each feature variable on the prediction.</p>
+<p>There are two kinds of measures. The first one measures the mean decrease in the accuracy. It measures the loss of accuracy when excluding the particular variable from the prediction model. Specifically, for each tree, the out-of-bag error (or mean squared error for the regression tree) is computed from its testing data. Then, the error is calculated again after permuting the values of each feature variable in testing data. The difference between the two error values is later averaged over all the trees. After normalization, the value obtained is the decrease in prediction accuracy.</p>
+<p>The second measure is based on the decrease in Gini Index when a variable is selected as a split. In particular, it calculates for each variable the sum of the decrease in the Gini Index from each tree when it is chosen as the split. Then, this sum is divided by the total number of trees built to gain the decrease in the Gini Index of that variable.</p>
+<p> </p>
+</div>
+<div id="hyperparameter-tuning" class="section level2">
+<h2>- Hyperparameter tuning</h2>
+<p>Hyperparameter tuning refers to a set of parameters that needs to be decided before starting the algorithm. Those parameters can be adjusted either to make the model have better performance or to fasten the model. These are some common parameters that can be set before conducting the RF in R.</p>
+<ol style="list-style-type: decimal">
+<li><p>Number of trees (ntree)</p></li>
+<li><p>Number of feature variables randomly sampled as candidates at each split. (mtry)</p></li>
+</ol>
+<hr />
+</div>
+</div>
+<div id="species-distribution-model-sdm" class="section level1">
+<h1>Species distribution model (SDM)</h1>
+<p>The concept of species distribution is deeply connected to the niche theory that begins to be formulated in the early 90’ (Johnson 1910; Grinnell 1917; Elton 1927) and was later innovated by Hutchinson in 1957. He first differentiated the niche into the fundamental and the realized one. The former measures the geographical area where the species can have a positive population growth considering all the abiotic factors, while the latter encompasses not only the abiotic effect but also the competition among species. Therefore, it made the realized niche smaller than the fundamental one. However, nowadays, we know that some biotic effects such as facilitation (positive interspecific interactions) can help the population positively grow (Bruno et al. 2003). Until 2007, Soberon integrated the third critical factor, species dispersal or movement capacity, in the niche theory to consider if a species can reach a given area. He argued that before assessing if a particular species can thrive in the geographical area of interest where both abiotic and biotic conditions can satisfy the requirement of species, the species’ ability to arrive at that area must be examined. This is so-called biotic-abiotic-movement (BAM) concept that incorporates the interplay among these three factors into the assessment of species niche (Figure 3).</p>
+<center>
+<img src="Fig3.png" alt="." style="width:40.0%" />
+</center>
+<p><strong>Figure 3.</strong> A BAM diagram suggests the three factors affecting the distribution of a species, abiotic factors (A), biotic factors (B), and dispersal or movement ability (M). It is adapted from Soberon (2007). The blue area between A and B indicates the area where the species can potentially have a positive growth considering its abiotic requirement and the prevailing biotic process, or also called “realized niche”. The intersection among A, B, and M (close circle area) represents the area where the species occupied can move in and increase its population</p>
+<p>Now, although we know that the SDM originated from the niche theory, the dispute still exists in which niche we are trying to study in SDM, is it the realized niche (the blue area in Figure 3), or the occupied niche (the close circle area in Figure 3), or none of both? There might not be a correct answer for now. Depend on the interest of research, the selected factors can be largely different, resulting in the distinctive niches measured. Indeed, according to the knowledge of the ecologist on the targeted species, the availability of abiotic data, and the sampling scale, the selection of predicting variables in SDM can be very different. Common climate data including in the models are often temperature, precipitation…etc. If your targeted species is the tropical scleractinian corals, factors other than those common ones such as light intensity and sedimentation should also be considered because of the reliance of corals on zooxanthellate. However, those two parameters are much less important in regulating the distribution of pelagic fish species which do not largely rely on light.</p>
+<hr />
+</div>
+<div id="advantages-and-disadvantages" class="section level1">
+<h1>Advantages and disadvantages</h1>
+<p>After understanding both RF and SDM, we can start to talk about why RF becomes more and more popular in fitting SDM recently. It has several advantages when combing both:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>No need for assumptions before conducting the models</strong> (e.g. independence of variables, normal distribution). This is a very great asset of this non-parametric model, which makes it outcompete to other linear-based models (e.g. generalized linear model). One of the required assumptions before conducting the traditional linear-based models is the independence of variables. However, since some environmental data are naturally spatial- or temporal-autocorrelation, additional statistical steps have to be implemented to deal with this issue before starting the linear-based models. Another required assumption when building linear-based models is the normality, nonetheless, those environmental data are not usually normally distributed. In this condition, RF is a non-parametric model that can still work when the normality of the data is not meet.</p></li>
+<li><p><strong>Flexibility to address several types of analysis.</strong> As mentioned earlier, RF can address many kinds of statistical analysis or models such as regression, classification, prediction. This flexibility makes RF very useful in modeling species distribution. For example, common types of environmental predictors include categorical and continuous, and the species data can be either presence-absence or abundance. The good news is, RF is able to integrate all of them.</p></li>
+<li><p><strong>Identify non-linear relationships.</strong> The response of species to the environmental condition or change is not always linear, it can be exponential, concave…etc. Sometimes, these non-linear interactions between the environmental factors and species can also be meaningful to affect species distribution. The advantage of RF is that it can discover non-linear relationships between both that the linear-based models cannot find. In addition, another limitation when using the linear-based model to fit species distribution is that those linear-based models can only test the priori hypothesis and are, therefore, hard to detect the relationship out of this priori expectation. On the other hand, RF is also able to figure out the complex interactions between feature variables. This is because the RF is an assemble of many CARTs, so it can address the environmental factors that interact with non-linear or with hierarchy.</p></li>
+<li><p><strong>Allowing missing value.</strong> RF automatically produces proximity, which is the measure of similarity among data points. This proximity matrix can be used to impute the missing data that could be obtained when ecologists have to simultaneously sample species and environmental data.</p></li>
+<li><p><strong>Less overfitting.</strong> CART tends to overfit the data because it would continuously split the nodes to minimize the within-node entropy. However, this issue is overcome in RF by choosing the best CART from many of them through the out-of-bag procedure/averaging many CARTs and also by randomly selecting the candidate variables in each node of trees. Overfitting is the last issue we would like to encounter when constructing a model since it could make the model perform badly in prediction, so does the SDM.</p></li>
+</ol>
+<p> </p>
+<p>It seems it is perfect to model the distribution of species with RF. Nonetheless, several disadvantages still exist when conducting it:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>A large number of trees make the algorithm slow to run.</strong> A large enough dataset, as well as number of trees, has to be prepared and built to gain a robust RF model. This process can make the algorithm time-consuming.</p></li>
+<li><p><strong>Blackbox approach.</strong> The ecologists have very few controls on what the algorithm does, basically, they can only try with different settings of hyperparameters (see the section of hyperparameter tuning) and different ratios of training and testing sets, then check the model afterward. This blackbox effect can sometimes make the results hard to interpret, however, this may not be a big issue if the ecologists already have a basic understanding of the species they are working on.</p></li>
+</ol>
+<hr />
+</div>
+<div id="demonstration-in-r" class="section level1">
+<h1>Demonstration in R</h1>
+<p>To demonstrate how to apply RF on SDM in R, I chose three abiotic factors, sea surface temperature (SST), light at the bottom, and chlorophyll <em>a</em>, to model the distribution of a scleractinian coral species, <em>Stylophora pistillata</em>. The cover data of the coral species from 209 transects sampled in the north, east, and south Taiwan during 2015-2020 were derived from my Ph.D. research project. Each transect sampled the area of 5.25m<sup>2</sup> and one unit value in species cover represent the area of 0.01 among 5.25 m<sup>2</sup>. As for the three abiotic parameters, I computed their 2014 mean annual values averaging the 12 months data downloaded from the ERDDP server managed by National Oceanic and Atmospheric Administration (NOAA), USA (dataset ID for temperature is NOAA_DHW, for chlorophyll <em>a</em> is erdMH1chlamday, for light at the bottom are erdMH1par0mday and erdMH1kd490mday<sup>1</sup>). Since the abiotic variables I chose are all continuous ones, so I will demonstrate the RF with regression trees instead of classification ones.</p>
+<p><sup>1</sup> light at the bottom = PAR x exp (-kd490 x z) where PAR is photosynthetically available radiation, kd49 means diffuse attenuation k490, and z represents the in situ depth.</p>
+<p> </p>
+<p>Package installation</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># install.pckages(c(&#39;readxl&#39;,&#39;caTools&#39;,&#39;randomForest&#39;,&#39;rgdal&#39;,&#39;ggplot2&#39;))</span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw">library</span>(readxl)</a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw">library</span>(caTools)</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw">library</span>(randomForest)</a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="kw">library</span>(rgdal)</a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="kw">library</span>(ggplot2)</a></code></pre></div>
+<p> </p>
+<p>Data importation</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">stpi &lt;-<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&quot;Stylophora_pistillata.xlsx&quot;</span>) <span class="co"># import Stylophora pistillata cover and environmental data from 209 transects</span></a>
+<a class="sourceLine" id="cb2-2" title="2">stpi &lt;-<span class="st"> </span>stpi[ ,<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">6</span>)] <span class="co"># remove the column with transect, min SST and max SST information</span></a>
+<a class="sourceLine" id="cb2-3" title="3">cord &lt;-<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&quot;cord.xlsx&quot;</span>) <span class="co"># import the coordinate of sampling transects</span></a>
+<a class="sourceLine" id="cb2-4" title="4">taiwan &lt;-<span class="st"> </span><span class="kw">readOGR</span>(<span class="st">&#39;TWN_adm0.shp&#39;</span>) <span class="co"># import the OGR file of Taiwan map </span></a></code></pre></div>
+<p> </p>
+<p>After importing all the files, let’s start to build the species distribution model with RF. The first thing I do is to divide the whole dataset into training and testing sets with the ratio of 7:3, this ratio can be changed if the new model performed better than this one.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">sample.stpi &lt;-<span class="st"> </span>caTools<span class="op">::</span><span class="kw">sample.split</span>(stpi<span class="op">$</span>SP, <span class="dt">SplitRatio =</span> <span class="fl">.7</span>)</a>
+<a class="sourceLine" id="cb3-2" title="2">stpi.train &lt;-<span class="st"> </span><span class="kw">subset</span>(stpi, sample.stpi <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb3-3" title="3">stpi.test &lt;-<span class="st"> </span><span class="kw">subset</span>(stpi, sample.stpi <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="kw">dim</span>(stpi.train)</a></code></pre></div>
+<pre><code>## [1] 148   4</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">dim</span>(stpi.test)</a></code></pre></div>
+<pre><code>## [1] 61  4</code></pre>
+<p> </p>
+<p>Then, I can start to create the model.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">set.seed</span>(<span class="dv">11</span>) <span class="co"># set a random seed to make the model reproducible</span></a>
+<a class="sourceLine" id="cb7-2" title="2">rf.stpi &lt;-<span class="st"> </span><span class="kw">randomForest</span>(SP <span class="op">~</span><span class="st"> </span>.,<span class="dt">data=</span>stpi.train, <span class="dt">importance =</span> T) <span class="co"># build the random forest model</span></a>
+<a class="sourceLine" id="cb7-3" title="3">rf.stpi</a></code></pre></div>
+<pre><code>## 
+## Call:
+##  randomForest(formula = SP ~ ., data = stpi.train, importance = T) 
+##                Type of random forest: regression
+##                      Number of trees: 500
+## No. of variables tried at each split: 1
+## 
+##           Mean of squared residuals: 16.4419
+##                     % Var explained: 24.88</code></pre>
+<p> </p>
+<p>The result of this model shows that the three factors can together explain 21.71% of the total variance. This is not high, but with only three variables, it is also not bad. Still, more abiotic factors are recommended to add to this model to catch more variance. I use 500 trees (R’s default) to build this model, and caution is needed for the number of trees since too many trees may make the model overfitting. Therefore, checking the mean square errors of models created with the different number of trees is recommended.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">plot</span>(rf.stpi) <span class="co"># check the mean square error of models</span></a></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p> </p>
+<p>From the plot, we know that as more and more trees are built, the errors decrease and eventually become stable. It seems that when the number of trees is around 150, we arrived at the lowest error. We can check it with the “which.min” function.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">which.min</span>(rf.stpi<span class="op">$</span>mse)</a></code></pre></div>
+<pre><code>## [1] 133</code></pre>
+<p> </p>
+<p>It turns out that we can have the lowest error in the RF model with 133 trees, so let’s rebuild the model with this number of trees by using the argument “ntree”.</p>
+<p>Then, I can start to create the model.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb12-2" title="2">rf.stpi.min &lt;-<span class="st"> </span><span class="kw">randomForest</span>(SP <span class="op">~</span><span class="st"> </span>.,<span class="dt">data=</span>stpi.train, <span class="dt">importance =</span> T, <span class="dt">ntree=</span><span class="dv">133</span>)</a>
+<a class="sourceLine" id="cb12-3" title="3">rf.stpi.min</a></code></pre></div>
+<pre><code>## 
+## Call:
+##  randomForest(formula = SP ~ ., data = stpi.train, importance = T,      ntree = 133) 
+##                Type of random forest: regression
+##                      Number of trees: 133
+## No. of variables tried at each split: 1
+## 
+##           Mean of squared residuals: 16.20807
+##                     % Var explained: 25.95</code></pre>
+<p> </p>
+<p>The variance explained slightly increase and the error slightly decrease, so this model performs a little bit better than the one with 500 trees. In addition to this hyperparameter, we can also adjust the number of the variables randomly selected at each split with the argument “mtry” to make the model perform better.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">rf.stpi.min<span class="fl">.2</span> &lt;-<span class="st"> </span><span class="kw">randomForest</span>(SP <span class="op">~</span><span class="st"> </span>.,<span class="dt">data=</span>stpi.train, <span class="dt">importance =</span> T,<span class="dt">ntree=</span><span class="dv">133</span>, <span class="dt">mtry=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb14-2" title="2">rf.stpi.min<span class="fl">.2</span></a></code></pre></div>
+<pre><code>## 
+## Call:
+##  randomForest(formula = SP ~ ., data = stpi.train, importance = T,      ntree = 133, mtry = 2) 
+##                Type of random forest: regression
+##                      Number of trees: 133
+## No. of variables tried at each split: 2
+## 
+##           Mean of squared residuals: 16.22496
+##                     % Var explained: 25.87</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1">rf.stpi.min<span class="fl">.3</span> &lt;-<span class="st"> </span><span class="kw">randomForest</span>(SP <span class="op">~</span><span class="st"> </span>.,<span class="dt">data=</span>stpi.train, <span class="dt">importance =</span> T,<span class="dt">ntree=</span><span class="dv">133</span>, <span class="dt">mtry=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb16-2" title="2">rf.stpi.min<span class="fl">.3</span></a></code></pre></div>
+<pre><code>## 
+## Call:
+##  randomForest(formula = SP ~ ., data = stpi.train, importance = T,      ntree = 133, mtry = 3) 
+##                Type of random forest: regression
+##                      Number of trees: 133
+## No. of variables tried at each split: 3
+## 
+##           Mean of squared residuals: 16.63828
+##                     % Var explained: 23.98</code></pre>
+<p> </p>
+<p>However, the models with the different number of variables do not perform better than the original one. Hence, we will use the one with mtry =1.</p>
+<p>Now, we can check the importance of those variables in this model with the function “varImpPlot” and” importance”.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1"><span class="kw">varImpPlot</span>(rf.stpi.min)</a></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">importance</span>(rf.stpi.min)</a></code></pre></div>
+<pre><code>##         %IncMSE IncNodePurity
+## light 17.161037      780.4509
+## SST    9.399700      548.2653
+## Chl_a  9.368645      417.8289</code></pre>
+<p> </p>
+<p>The result shows the importance of variables calculated with the mean decrease in accuracy and with the Gini Index. They all suggest that light is the most important factor in driving the distribution of <em>S. pistillata</em> while the remaining two ones rank differently in the two means computing the importance.</p>
+<p>Now, we can try to validate this model with the testing set by calculating the residuals and the mean squared error.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1">pred.stpi &lt;-<span class="st"> </span><span class="kw">predict</span>(rf.stpi.min, <span class="dt">newdata=</span>stpi.test)</a>
+<a class="sourceLine" id="cb21-2" title="2">rf.resid.stpi &lt;-<span class="st"> </span>pred.stpi <span class="op">-</span><span class="st"> </span>stpi.test<span class="op">$</span>SP <span class="co"># the residuals</span></a>
+<a class="sourceLine" id="cb21-3" title="3"><span class="kw">plot</span>(stpi.test<span class="op">$</span>SP,rf.resid.stpi, <span class="dt">pch=</span><span class="dv">18</span>,<span class="dt">ylab=</span><span class="st">&quot;residuals (predicted-observed)&quot;</span>,   <span class="dt">xlab=</span><span class="st">&quot;observed&quot;</span>,<span class="dt">col=</span><span class="st">&quot;blue3&quot;</span>) <span class="co"># residual plot</span></a>
+<a class="sourceLine" id="cb21-4" title="4"><span class="kw">abline</span>(<span class="dt">h=</span><span class="dv">0</span>,<span class="dt">col=</span><span class="st">&quot;red4&quot;</span>,<span class="dt">lty=</span><span class="dv">2</span>)</a></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1"><span class="kw">mean</span>(rf.resid.stpi<span class="op">^</span><span class="dv">2</span>) <span class="co"># mean squared error</span></a></code></pre></div>
+<pre><code>## [1] 9.189737</code></pre>
+<p> </p>
+<p>The residual plot shows that the model makes around 5% cover error when predicting the distribution of <em>S. pistillata</em>, and more error would be found in the area with higher cover. This may be because there are too little data in our dataset especially in the area with the higher cover of <em>S. pistillata</em>. The value of mean squared error can be used to compare to other models and figure out the best one.</p>
+<p>Then, we can have a look on how the individual abiotic variable affecting the model with partial plots with the function ”partialPlot”.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>)) </a>
+<a class="sourceLine" id="cb24-2" title="2"><span class="kw">partialPlot</span>(rf.stpi.min, <span class="kw">as.data.frame</span>(stpi.train), light)</a>
+<a class="sourceLine" id="cb24-3" title="3"><span class="kw">partialPlot</span>(rf.stpi.min, <span class="kw">as.data.frame</span>(stpi.train), SST)</a>
+<a class="sourceLine" id="cb24-4" title="4"><span class="kw">partialPlot</span>(rf.stpi.min, <span class="kw">as.data.frame</span>(stpi.train), Chl_a)</a></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1"><span class="kw">dev.off</span>()</a></code></pre></div>
+<pre><code>## null device 
+##           1</code></pre>
+<p> </p>
+<p>The purpose of the partial plot is to display how the prediction of coral cover is changing with the change of each of the three abiotic variables. If the line is closer to zero, it means that the given variable is not affecting the coral cover at all, while the more the line deviating from zero, this variable influences the coral cover more. Instead of looking at the value on the y-axis, the relationship between the y-axis and the given variable across a specific range is what we should focus on. For example, in the partial dependence plot on light, when the light intensity becomes stronger, we have more chances to see a high cover of <em>S. pistillata</em>. This increase of chances is even more obvious when the light intensity is between 5 to 15 W/m<sup>2</sup>/day and over 25 W/m<sup>2</sup>/day. Look at the partial dependence plot on SST, we found that the cover of <em>S. pistillata</em> would dramatically decrease when the 2014 mean SST is above 26 <sup>O</sup>C and its cover remains quite consistent when it is below 26 OC. Lastly, for the partial dependence plot on chlorophyll a, it peaks when the concentration of chlorophyll <em>a</em> is at around 0.2, 0.4, and 1 mg/m<sup>3</sup>. By checking the tendency and the value in the y-axis on these three partial plots, it may explain why light intensity is the most important factor in predicting the distribution of <em>S. pistillatav</em>.</p>
+<p>Now, let’s also draw the distribution map of <em>S. pistillata</em> with cover information to visualize it.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1">cord &lt;-<span class="st"> </span><span class="kw">cbind</span>(cord,stpi<span class="op">$</span>SP)</a>
+<a class="sourceLine" id="cb27-2" title="2"><span class="kw">colnames</span>(cord) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;Tr&#39;</span>,<span class="st">&#39;Lat&#39;</span>,<span class="st">&quot;Lon&quot;</span>,<span class="st">&#39;Cover&#39;</span>)</a>
+<a class="sourceLine" id="cb27-3" title="3">lat &lt;-<span class="st"> </span><span class="kw">as.factor</span>(cord<span class="op">$</span>Lat)</a>
+<a class="sourceLine" id="cb27-4" title="4">lon &lt;-<span class="st"> </span><span class="kw">as.factor</span>(cord<span class="op">$</span>Lon)</a>
+<a class="sourceLine" id="cb27-5" title="5">coords &lt;-<span class="st"> </span><span class="kw">SpatialPoints</span>(cord[, <span class="kw">c</span>(<span class="st">&quot;Lon&quot;</span>, <span class="st">&quot;Lat&quot;</span>)]) </a>
+<a class="sourceLine" id="cb27-6" title="6">stpi_cord &lt;-<span class="st"> </span><span class="kw">SpatialPointsDataFrame</span>(coords, cord) </a>
+<a class="sourceLine" id="cb27-7" title="7"><span class="kw">proj4string</span>(stpi_cord) &lt;-<span class="st"> </span><span class="kw">CRS</span>(<span class="st">&quot;+proj=longlat +no_defs +ellps=WGS84&quot;</span>, <span class="dt">doCheckCRSArgs =</span> F) </a>
+<a class="sourceLine" id="cb27-8" title="8"><span class="kw">head</span>(stpi_cord)</a></code></pre></div>
+<pre><code>##            coordinates        Tr      Lat      Lon Cover
+## 1 (121.8046, 25.14455) N_CJ_5_T1 25.14455 121.8046    12
+## 2 (121.8046, 25.14455) N_CJ_5_T2 25.14455 121.8046     1
+## 3 (121.8046, 25.14455) N_CJ_5_T3 25.14455 121.8046     4
+## 4 (121.8046, 25.14455) N_CJ_5_T4 25.14455 121.8046     0
+## 5 (121.8046, 25.14455) N_CJ_5_T5 25.14455 121.8046     3
+## 6  (121.9146, 25.1257) N_BT_5_T1 25.12570 121.9146     0</code></pre>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1"><span class="kw">class</span>(stpi_cord)</a></code></pre></div>
+<pre><code>## [1] &quot;SpatialPointsDataFrame&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;sp&quot;</code></pre>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1">taiwan_map &lt;-<span class="st"> </span><span class="kw">fortify</span>(taiwan)</a></code></pre></div>
+<pre><code>## Regions defined for each Polygons</code></pre>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1">Taiwan.map &lt;-<span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb33-2" title="2"><span class="st">  </span><span class="kw">geom_polygon</span>(<span class="dt">data=</span> taiwan_map, <span class="kw">aes</span>(<span class="dt">x=</span> long, <span class="dt">y=</span> lat, <span class="dt">group=</span> group), <span class="dt">fill=</span><span class="st">&#39;light grey&#39;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb33-3" title="3"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">119</span>, <span class="dv">123</span>)) <span class="op">+</span><span class="st"> </span><span class="co"># set x and y limt</span></a>
+<a class="sourceLine" id="cb33-4" title="4"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="fl">21.5</span>, <span class="fl">25.5</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb33-5" title="5"><span class="st">  </span><span class="kw">theme_minimal</span>()<span class="op">+</span><span class="st">  </span><span class="co"># background    </span></a>
+<a class="sourceLine" id="cb33-6" title="6"><span class="st">  </span><span class="kw">coord_fixed</span>(<span class="fl">1.1</span>)<span class="op">+</span><span class="st"> </span><span class="co"># fix the coordinate</span></a>
+<a class="sourceLine" id="cb33-7" title="7"><span class="st">  </span><span class="kw">geom_point</span>(cord, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x=</span> Lon, <span class="dt">y=</span> Lat, <span class="dt">size =</span> Cover),<span class="dt">alpha=</span><span class="fl">0.2</span>, <span class="dt">color=</span><span class="st">&quot;blue&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="co"># add the location of sampling transects</span></a>
+<a class="sourceLine" id="cb33-8" title="8"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;right&quot;</span>)</a>
+<a class="sourceLine" id="cb33-9" title="9"></a>
+<a class="sourceLine" id="cb33-10" title="10">Taiwan.map<span class="op">+</span><span class="st"> </span><span class="kw">scale_size_continuous</span>(<span class="dt">name =</span> <span class="st">&#39;Cover (m^2)&#39;</span> , <span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">15</span>),<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">20</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&#39;0.01&#39;</span>,<span class="st">&#39;0.05&#39;</span>,<span class="st">&#39;0.1&#39;</span>,<span class="st">&#39;0.15&#39;</span>,<span class="st">&#39;0.2&#39;</span>)) <span class="co"># adjust the size of bubble plot</span></a></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p> </p>
+<p>According to this map, <em>S. pistillata</em> tends to have higher cover in the north of Taiwan while the east and the south have less cover. Based on its distribution and the RF model, we can deduce that the environment of north Taiwan may have higher light intensity and also lower SST. However, in reality, we know that the north generally receives lower light intensity than the east and the south do if we sample at the same depth, this bias may be caused by the oversampling in the shallower water of the north.</p>
+<p>Overall, this RF model suggests that the three abiotic variables, SST, light at the bottom, and chlorophyll <em>a</em>, all positively contribute to the prediction of the distribution of <em>S</em>. pistillata* with the light does it better than the other two variables. With these three factors, we can already catch 21.95% of the total variance. Nonetheless, considering the number of observations and also the number of variables, this dataset is too small to build a very robust RF model. Further sample effort is needed to make this prediction stronger especially in places other than the shallow water in the north of Taiwan.</p>
+<p> </p>
+<hr />
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>RF can integrate different types of variables as well as a large amount of data, and seek for the complex relationship between the predicted variables and the response variables that sometimes the linear-based model cannot find. These features allow RF to stand out as one of the most popular approaches in modeling species distribution, in which the complex and dependent relationship commonly exists within and among environmental factors. Furthermore, based on a robust RF model, a prediction on the future alteration of species distribution considering the human-driven changes in any environmental parameters can be further estimated. This information could be quite helpful in conservation.</p>
+<p> </p>
+<hr />
+</div>
+<div id="reference" class="section level1">
+<h1>Reference</h1>
+<p>Bruno JF, Stachowicz JJ, Bertness MD (2003) Inclusion of facilitation into ecological theory. Trends Ecol Evol 18:119-125</p>
+<p>Cutler DR, Edwards TC, Beard KH, Catler A, Hess KT, Gibson J, Lawler JJ (2007) Random forest for classification in ecology. Ecology 88:2783–2792</p>
+<p>Elton CS (1927) Animal ecology. Sedgwick &amp; Jackson, London, U.K Grinnell J (1917) The niche-relationships of the California trasher. The Auk 34:427-433</p>
+<p>Hutchinson GE (1957) Concluding remarks, cold spring harbor symposium. Quantitative Biology 22:415-427</p>
+<p>Jeffrey S. Evans, Melanie A. Murphy, Zachary A. Holden, Cushman SA (2011) Modeling species distribution and change using random forest. In: Drew CA, Wiersma YF, Huettmann F (eds) Predictive species and habitat modeling in landscape ecology. Springer New York Dordrecht Heidelberg London,</p>
+<p>Johnson RH (1910) Determinate evolution in the color-pattern of the lady-beetles. Carnegie Inst. of Washington, Washington, D.C., USA</p>
+<p>Soberon J (2007) Grinnellian and Eltonian niches and geographic distributions of species. Ecol Lett 10:1115-1123 [10.1111/j.1461-0248.2007.01107.x]</p>
+<p><a href="https://builtin.com/data-science/random-forest-algorithm" class="uri">https://builtin.com/data-science/random-forest-algorithm</a></p>
+<p><a href="https://towardsdatascience.com/understanding-random-forest-58381e0602d2" class="uri">https://towardsdatascience.com/understanding-random-forest-58381e0602d2</a></p>
+<p><a href="https://damariszurell.github.io/SDM-Intro/#1_Background" class="uri">https://damariszurell.github.io/SDM-Intro/#1_Background</a></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

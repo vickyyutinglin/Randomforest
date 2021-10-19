@@ -1,5 +1,16 @@
 ---
-title: "About Me"
+title: "About me"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+
 ---
 
-Why I am awesome. 
+I am Yuting Vicky Lin, a PhD student in Institute of Oceanography, National Taiwan University. 
+
+![This is me :D](C:/Users/USER.DESKTOP-ELH7F84/OneDrive/R project/Randomforest/me.jpg){width=30%}
+
+[Visit my Research Gate!](https://www.researchgate.net/profile/Yuting-Lin-7)
+
+[Visit my lab web!](https://www.dipintothereef.com/)

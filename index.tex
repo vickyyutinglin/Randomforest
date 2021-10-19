@@ -1,0 +1,918 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Advantages and Disadvantages of Random Forest in Modeling Species Distribution: From Theory to Practice},
+  pdfauthor={Yuting Vicky Lin},
+  pdfborder={0 0 0},
+  breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-2}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+
+\title{Advantages and Disadvantages of Random Forest in Modeling Species
+Distribution: From Theory to Practice}
+\author{Yuting Vicky Lin}
+\date{2021/10/19}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{what-is-a-random-forest}{%
+\section{What is a random forest?}\label{what-is-a-random-forest}}
+
+Random forest (RF) is a supervised learning algorithm that needs data to
+train. As its name, RF is an assemble of many individual decision trees
+which act as classifiers. Each tree can make a decision, and the final
+decision is made based on the major votes (classification tree) or the
+average (regression tree) from all decision trees. It is commonly used
+to deal with classification, regression, or prediction tasks and also to
+measure the relative importance of the input variables. In addition, it
+is easy to use and the results it produces are usually good and quite
+straightforward. Combing all these features, it becomes one of the most
+used algorithms in machine learning.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{how-does-it-work}{%
+\section{How does it work?}\label{how-does-it-work}}
+
+RF uses a bootstrapped procedure on the dataset to repeatedly create
+many subsets. Each of the subsets is later used to fit either a
+classification or a regression tree, and the final decision is made
+based on the votes or the average from those trees (Figure 1). That is,
+an optimal model can be arrived at by converging many classification and
+regression trees (CARTs) fitted by the bootstrapping samples. Based on
+this best model, we can make a prediction of the new observations. Here,
+I will explain step by step how does this algorithm work and
+terminologies should be known to understand this algorithm.
+
+\begin{figure}
+\centering
+\includegraphics{C:/Users/USER.DESKTOP-ELH7F84/OneDrive/R project/Randomforest/Fig1.png}
+\caption{\textbf{Figure 1.} The framework of the Random Forest
+algorithm}
+\end{figure}
+
+~
+
+\hypertarget{step}{%
+\subsection{- Step}\label{step}}
+
+Assume I have a dataset (N) and the independent variables (M) that I
+think are important features to delineate those observations. By
+applying RF to this dataset, I can \textbf{(1) find out the best model
+to fit this dataset, (2) predict the new observation according to this
+model, and (3) calculate the importance of those feature variables.}
+These three tasks are the target to obtain to answer the research
+questions when most people use RF. The procedure of this algorithm is:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Build n Bootstrap replicates from the dataset N with the consistent
+  amount of observations (with replacement). For each replicate, a CART
+  will be created. That is, n is also the number of CARTs to grow.
+\item
+  Divide each Bootstrap replicate into a training and a testing set. The
+  amount of data in two sets can be 9:1, 8:2, 7:3, or any ratio, there
+  is no fixed rule but depending on the performance of your resulted
+  model.
+\item
+  For each replicate, fit a CART to the training set. At each node of
+  the tree, a permutation procedure randomly selecting m feature
+  variables from the variable set (M) is conducted to find out the best
+  split based on the Gini Index that can quantify the within-node
+  entropy. After this CART is successfully grown, it would be validated
+  with the testing set. The prediction error of the classification tree
+  is measured by our-of-bag (bootstrapping) error while the one of
+  regression tree is calculated by mean squared error.
+\item
+  Ensemble n CARTs to find out the best model.
+\item
+  Based on this model, a prediction can be made for the new
+  observations.
+\end{enumerate}
+
+~
+
+\hypertarget{classification-and-regression-tree-cart}{%
+\subsection{- Classification and regression tree
+(CART)}\label{classification-and-regression-tree-cart}}
+
+CART is a classifier used to sort the observations based on recursive
+binary decisions made by the given feature variables having the most
+information. However, how does the CART decide the binary decisions on
+each split? Before answering it, we have to know what is a Gini Index.
+Gini Index can measure the probability of a specific variable being
+incorrectly classified when randomly selected. This index is
+entropy-based, so their interpretation is similar. Gini Index ranges
+between 0 to 1, while 0 denotes that all the elements belong to a single
+class or there is only one class existing (pure), 1 denotes that all the
+elements randomly distribute among the classes (impure). Mathematically,
+it is expressed as:
+
+\[
+Gini Index=1-\sum_{i = 1}^{n}{(p_i)^2} 
+\] where p\textsubscript{i} denotes the probability of an element being
+classified to a specific class.
+
+In each split of a tree, Gini Indexes for each of the variables randomly
+picked up from its variable set are calculated, and the one with the
+lowest Gini Index is chosen as the given split (Figure 2). For the
+variable part, the more the variable contributes to the prediction
+process, the more chances it would be retained as the split. While for
+the observation, the more binary decisions the CART makes, the more
+similar the feature variables of the subset groups (Figure 2).
+Nonetheless, more splits on a tree do not always let the model better,
+too many splits may lead to the overfitting of the model.
+
+\begin{figure}
+\centering
+\includegraphics{C:/Users/USER.DESKTOP-ELH7F84/OneDrive/R project/Randomforest/Fig2.png}
+\caption{\textbf{Figure 2.} A CART trying to classify corals based on
+their morphology and color. The entropy of the dataset decreases when
+each time a split is made.}
+\end{figure}
+
+~
+
+\hypertarget{variable-importance}{%
+\subsection{- Variable importance}\label{variable-importance}}
+
+An excellent piece of information that we can derive from RF is the
+relative importance of each feature variable on the prediction.
+
+There are two kinds of measures. The first one measures the mean
+decrease in the accuracy. It measures the loss of accuracy when
+excluding the particular variable from the prediction model.
+Specifically, for each tree, the out-of-bag error (or mean squared error
+for the regression tree) is computed from its testing data. Then, the
+error is calculated again after permuting the values of each feature
+variable in testing data. The difference between the two error values is
+later averaged over all the trees. After normalization, the value
+obtained is the decrease in prediction accuracy.
+
+The second measure is based on the decrease in Gini Index when a
+variable is selected as a split. In particular, it calculates for each
+variable the sum of the decrease in the Gini Index from each tree when
+it is chosen as the split. Then, this sum is divided by the total number
+of trees built to gain the decrease in the Gini Index of that variable.
+
+~
+
+\hypertarget{hyperparameter-tuning}{%
+\subsection{- Hyperparameter tuning}\label{hyperparameter-tuning}}
+
+Hyperparameter tuning refers to a set of parameters that needs to be
+decided before starting the algorithm. Those parameters can be adjusted
+either to make the model have better performance or to fasten the model.
+These are some common parameters that can be set before conducting the
+RF in R.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Number of trees (ntree)
+\item
+  Number of feature variables randomly sampled as candidates at each
+  split. (mtry)
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{species-distribution-model-sdm}{%
+\section{Species distribution model
+(SDM)}\label{species-distribution-model-sdm}}
+
+The concept of species distribution is deeply connected to the niche
+theory that begins to be formulated in the early 90' (Johnson 1910;
+Grinnell 1917; Elton 1927) and was later innovated by Hutchinson in
+1957. He first differentiated the niche into the fundamental and the
+realized one. The former measures the geographical area where the
+species can have a positive population growth considering all the
+abiotic factors, while the latter encompasses not only the abiotic
+effect but also the competition among species. Therefore, it made the
+realized niche smaller than the fundamental one. However, nowadays, we
+know that some biotic effects such as facilitation (positive
+interspecific interactions) can help the population positively grow
+(Bruno et al.~2003). Until 2007, Soberon integrated the third critical
+factor, species dispersal or movement capacity, in the niche theory to
+consider if a species can reach a given area. He argued that before
+assessing if a particular species can thrive in the geographical area of
+interest where both abiotic and biotic conditions can satisfy the
+requirement of species, the species' ability to arrive at that area must
+be examined. This is so-called biotic-abiotic-movement (BAM) concept
+that incorporates the interplay among these three factors into the
+assessment of species niche (Figure 3).
+
+\includegraphics[width=0.4\textwidth,height=\textheight]{C:/Users/USER.DESKTOP-ELH7F84/OneDrive/R project/Randomforest/Fig3.png}
+
+\textbf{Figure 3.} A BAM diagram suggests the three factors affecting
+the distribution of a species, abiotic factors (A), biotic factors (B),
+and dispersal or movement ability (M). It is adapted from Soberon
+(2007). The blue area between A and B indicates the area where the
+species can potentially have a positive growth considering its abiotic
+requirement and the prevailing biotic process, or also called ``realized
+niche''. The intersection among A, B, and M (close circle area)
+represents the area where the species occupied can move in and increase
+its population
+
+Now, although we know that the SDM originated from the niche theory, the
+dispute still exists in which niche we are trying to study in SDM, is it
+the realized niche (the blue area in Figure 3), or the occupied niche
+(the close circle area in Figure 3), or none of both? There might not be
+a correct answer for now. Depend on the interest of research, the
+selected factors can be largely different, resulting in the distinctive
+niches measured. Indeed, according to the knowledge of the ecologist on
+the targeted species, the availability of abiotic data, and the sampling
+scale, the selection of predicting variables in SDM can be very
+different. Common climate data including in the models are often
+temperature, precipitation\ldots{}etc. If your targeted species is the
+tropical scleractinian corals, factors other than those common ones such
+as light intensity and sedimentation should also be considered because
+of the reliance of corals on zooxanthellate. However, those two
+parameters are much less important in regulating the distribution of
+pelagic fish species which do not largely rely on light.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{advantages-and-disadvantages}{%
+\section{Advantages and
+disadvantages}\label{advantages-and-disadvantages}}
+
+After understanding both RF and SDM, we can start to talk about why RF
+becomes more and more popular in fitting SDM recently. It has several
+advantages when combing both:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{No need for assumptions before conducting the models}
+  (e.g.~independence of variables, normal distribution). This is a very
+  great asset of this non-parametric model, which makes it outcompete to
+  other linear-based models (e.g.~generalized linear model). One of the
+  required assumptions before conducting the traditional linear-based
+  models is the independence of variables. However, since some
+  environmental data are naturally spatial- or temporal-autocorrelation,
+  additional statistical steps have to be implemented to deal with this
+  issue before starting the linear-based models. Another required
+  assumption when building linear-based models is the normality,
+  nonetheless, those environmental data are not usually normally
+  distributed. In this condition, RF is a non-parametric model that can
+  still work when the normality of the data is not meet.
+\item
+  \textbf{Flexibility to address several types of analysis.} As
+  mentioned earlier, RF can address many kinds of statistical analysis
+  or models such as regression, classification, prediction. This
+  flexibility makes RF very useful in modeling species distribution. For
+  example, common types of environmental predictors include categorical
+  and continuous, and the species data can be either presence-absence or
+  abundance. The good news is, RF is able to integrate all of them.
+\item
+  \textbf{Identify non-linear relationships.} The response of species to
+  the environmental condition or change is not always linear, it can be
+  exponential, concave\ldots{}etc. Sometimes, these non-linear
+  interactions between the environmental factors and species can also be
+  meaningful to affect species distribution. The advantage of RF is that
+  it can discover non-linear relationships between both that the
+  linear-based models cannot find. In addition, another limitation when
+  using the linear-based model to fit species distribution is that those
+  linear-based models can only test the priori hypothesis and are,
+  therefore, hard to detect the relationship out of this priori
+  expectation. On the other hand, RF is also able to figure out the
+  complex interactions between feature variables. This is because the RF
+  is an assemble of many CARTs, so it can address the environmental
+  factors that interact with non-linear or with hierarchy.
+\item
+  \textbf{Allowing missing value.} RF automatically produces proximity,
+  which is the measure of similarity among data points. This proximity
+  matrix can be used to impute the missing data that could be obtained
+  when ecologists have to simultaneously sample species and
+  environmental data.
+\item
+  \textbf{Less overfitting.} CART tends to overfit the data because it
+  would continuously split the nodes to minimize the within-node
+  entropy. However, this issue is overcome in RF by choosing the best
+  CART from many of them through the out-of-bag procedure/averaging many
+  CARTs and also by randomly selecting the candidate variables in each
+  node of trees. Overfitting is the last issue we would like to
+  encounter when constructing a model since it could make the model
+  perform badly in prediction, so does the SDM.
+\end{enumerate}
+
+~
+
+It seems it is perfect to model the distribution of species with RF.
+Nonetheless, several disadvantages still exist when conducting it:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{A large number of trees make the algorithm slow to run.} A
+  large enough dataset, as well as number of trees, has to be prepared
+  and built to gain a robust RF model. This process can make the
+  algorithm time-consuming.
+\item
+  \textbf{Blackbox approach.} The ecologists have very few controls on
+  what the algorithm does, basically, they can only try with different
+  settings of hyperparameters (see the section of hyperparameter tuning)
+  and different ratios of training and testing sets, then check the
+  model afterward. This blackbox effect can sometimes make the results
+  hard to interpret, however, this may not be a big issue if the
+  ecologists already have a basic understanding of the species they are
+  working on.
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{demonstration-in-r}{%
+\section{Demonstration in R}\label{demonstration-in-r}}
+
+To demonstrate how to apply RF on SDM in R, I chose three abiotic
+factors, sea surface temperature (SST), light at the bottom, and
+chlorophyll \emph{a}, to model the distribution of a scleractinian coral
+species, \emph{Stylophora pistillata}. The cover data of the coral
+species from 209 transects sampled in the north, east, and south Taiwan
+during 2015-2020 were derived from my Ph.D.~research project. Each
+transect sampled the area of 5.25m\textsuperscript{2} and one unit value
+in species cover represent the area of 0.01 among 5.25
+m\textsuperscript{2}. As for the three abiotic parameters, I computed
+their 2014 mean annual values averaging the 12 months data downloaded
+from the ERDDP server managed by National Oceanic and Atmospheric
+Administration (NOAA), USA (dataset ID for temperature is NOAA\_DHW, for
+chlorophyll \emph{a} is erdMH1chlamday, for light at the bottom are
+erdMH1par0mday and erdMH1kd490mday\textsuperscript{1}). Since the
+abiotic variables I chose are all continuous ones, so I will demonstrate
+the RF with regression trees instead of classification ones.
+
+\textsuperscript{1} light at the bottom = PAR x exp (-kd490 x z) where
+PAR is photosynthetically available radiation, kd49 means diffuse
+attenuation k490, and z represents the in situ depth.
+
+~
+
+Package installation
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# install.pckages(c('readxl','caTools','randomForest','rgdal','ggplot2'))}
+\KeywordTok{library}\NormalTok{(readxl)}
+\KeywordTok{library}\NormalTok{(caTools)}
+\KeywordTok{library}\NormalTok{(randomForest)}
+\KeywordTok{library}\NormalTok{(rgdal)}
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\end{Highlighting}
+\end{Shaded}
+
+~
+
+Data importation
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stpi <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(}\StringTok{"Stylophora_pistillata.xlsx"}\NormalTok{) }\CommentTok{# import Stylophora pistillata cover and environmental data from 209 transects}
+\NormalTok{stpi <-}\StringTok{ }\NormalTok{stpi[ ,}\OperatorTok{-}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{5}\NormalTok{,}\DecValTok{6}\NormalTok{)] }\CommentTok{# remove the column with transect, min SST and max SST information}
+\NormalTok{cord <-}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(}\StringTok{"cord.xlsx"}\NormalTok{) }\CommentTok{# import the coordinate of sampling transects}
+\NormalTok{taiwan <-}\StringTok{ }\KeywordTok{readOGR}\NormalTok{(}\StringTok{'TWN_adm0.shp'}\NormalTok{) }\CommentTok{# import the OGR file of Taiwan map }
+\end{Highlighting}
+\end{Shaded}
+
+~
+
+After importing all the files, let's start to build the species
+distribution model with RF. The first thing I do is to divide the whole
+dataset into training and testing sets with the ratio of 7:3, this ratio
+can be changed if the new model performed better than this one.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sample.stpi <-}\StringTok{ }\NormalTok{caTools}\OperatorTok{::}\KeywordTok{sample.split}\NormalTok{(stpi}\OperatorTok{$}\NormalTok{SP, }\DataTypeTok{SplitRatio =} \FloatTok{.7}\NormalTok{)}
+\NormalTok{stpi.train <-}\StringTok{ }\KeywordTok{subset}\NormalTok{(stpi, sample.stpi }\OperatorTok{==}\StringTok{ }\OtherTok{TRUE}\NormalTok{)}
+\NormalTok{stpi.test <-}\StringTok{ }\KeywordTok{subset}\NormalTok{(stpi, sample.stpi }\OperatorTok{==}\StringTok{ }\OtherTok{FALSE}\NormalTok{)}
+\KeywordTok{dim}\NormalTok{(stpi.train)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 148   4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{dim}\NormalTok{(stpi.test)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 61  4
+\end{verbatim}
+
+~
+
+Then, I can start to create the model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{11}\NormalTok{) }\CommentTok{# set a random seed to make the model reproducible}
+\NormalTok{rf.stpi <-}\StringTok{ }\KeywordTok{randomForest}\NormalTok{(SP }\OperatorTok{~}\StringTok{ }\NormalTok{.,}\DataTypeTok{data=}\NormalTok{stpi.train, }\DataTypeTok{importance =}\NormalTok{ T) }\CommentTok{# build the random forest model}
+\NormalTok{rf.stpi}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+##  randomForest(formula = SP ~ ., data = stpi.train, importance = T) 
+##                Type of random forest: regression
+##                      Number of trees: 500
+## No. of variables tried at each split: 1
+## 
+##           Mean of squared residuals: 18.51789
+##                     % Var explained: 15.39
+\end{verbatim}
+
+~
+
+The result of this model shows that the three factors can together
+explain 21.71\% of the total variance. This is not high, but with only
+three variables, it is also not bad. Still, more abiotic factors are
+recommended to add to this model to catch more variance. I use 500 trees
+(R's default) to build this model, and caution is needed for the number
+of trees since too many trees may make the model overfitting. Therefore,
+checking the mean square errors of models created with the different
+number of trees is recommended.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(rf.stpi) }\CommentTok{# check the mean square error of models}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{index_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+~
+
+From the plot, we know that as more and more trees are built, the errors
+decrease and eventually become stable. It seems that when the number of
+trees is around 150, we arrived at the lowest error. We can check it
+with the ``which.min'' function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{which.min}\NormalTok{(rf.stpi}\OperatorTok{$}\NormalTok{mse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1
+\end{verbatim}
+
+~
+
+It turns out that we can have the lowest error in the RF model with 133
+trees, so let's rebuild the model with this number of trees by using the
+argument ``ntree''.
+
+Then, I can start to create the model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\NormalTok{rf.stpi.min <-}\StringTok{ }\KeywordTok{randomForest}\NormalTok{(SP }\OperatorTok{~}\StringTok{ }\NormalTok{.,}\DataTypeTok{data=}\NormalTok{stpi.train, }\DataTypeTok{importance =}\NormalTok{ T, }\DataTypeTok{ntree=}\DecValTok{133}\NormalTok{)}
+\NormalTok{rf.stpi.min}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+##  randomForest(formula = SP ~ ., data = stpi.train, importance = T,      ntree = 133) 
+##                Type of random forest: regression
+##                      Number of trees: 133
+## No. of variables tried at each split: 1
+## 
+##           Mean of squared residuals: 18.68799
+##                     % Var explained: 14.62
+\end{verbatim}
+
+~
+
+The variance explained slightly increase and the error slightly
+decrease, so this model performs a little bit better than the one with
+500 trees. In addition to this hyperparameter, we can also adjust the
+number of the variables randomly selected at each split with the
+argument ``mtry'' to make the model perform better.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rf.stpi.min}\FloatTok{.2}\NormalTok{ <-}\StringTok{ }\KeywordTok{randomForest}\NormalTok{(SP }\OperatorTok{~}\StringTok{ }\NormalTok{.,}\DataTypeTok{data=}\NormalTok{stpi.train, }\DataTypeTok{importance =}\NormalTok{ T,}\DataTypeTok{ntree=}\DecValTok{133}\NormalTok{, }\DataTypeTok{mtry=}\DecValTok{2}\NormalTok{)}
+\NormalTok{rf.stpi.min}\FloatTok{.2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+##  randomForest(formula = SP ~ ., data = stpi.train, importance = T,      ntree = 133, mtry = 2) 
+##                Type of random forest: regression
+##                      Number of trees: 133
+## No. of variables tried at each split: 2
+## 
+##           Mean of squared residuals: 18.88564
+##                     % Var explained: 13.71
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rf.stpi.min}\FloatTok{.3}\NormalTok{ <-}\StringTok{ }\KeywordTok{randomForest}\NormalTok{(SP }\OperatorTok{~}\StringTok{ }\NormalTok{.,}\DataTypeTok{data=}\NormalTok{stpi.train, }\DataTypeTok{importance =}\NormalTok{ T,}\DataTypeTok{ntree=}\DecValTok{133}\NormalTok{, }\DataTypeTok{mtry=}\DecValTok{3}\NormalTok{)}
+\NormalTok{rf.stpi.min}\FloatTok{.3}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+##  randomForest(formula = SP ~ ., data = stpi.train, importance = T,      ntree = 133, mtry = 3) 
+##                Type of random forest: regression
+##                      Number of trees: 133
+## No. of variables tried at each split: 3
+## 
+##           Mean of squared residuals: 18.6792
+##                     % Var explained: 14.66
+\end{verbatim}
+
+~
+
+However, the models with the different number of variables do not
+perform better than the original one. Hence, we will use the one with
+mtry =1.
+
+Now, we can check the importance of those variables in this model with
+the function ``varImpPlot'' and'' importance''.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{varImpPlot}\NormalTok{(rf.stpi.min)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{index_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{importance}\NormalTok{(rf.stpi.min)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         %IncMSE IncNodePurity
+## light 10.068993      690.4802
+## SST    9.035173      606.1653
+## Chl_a  8.531926      504.5957
+\end{verbatim}
+
+~
+
+The result shows the importance of variables calculated with the mean
+decrease in accuracy and with the Gini Index. They all suggest that
+light is the most important factor in driving the distribution of
+\emph{S. pistillata} while the remaining two ones rank differently in
+the two means computing the importance.
+
+Now, we can try to validate this model with the testing set by
+calculating the residuals and the mean squared error.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pred.stpi <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(rf.stpi.min, }\DataTypeTok{newdata=}\NormalTok{stpi.test)}
+\NormalTok{rf.resid.stpi <-}\StringTok{ }\NormalTok{pred.stpi }\OperatorTok{-}\StringTok{ }\NormalTok{stpi.test}\OperatorTok{$}\NormalTok{SP }\CommentTok{# the residuals}
+\KeywordTok{plot}\NormalTok{(stpi.test}\OperatorTok{$}\NormalTok{SP,rf.resid.stpi, }\DataTypeTok{pch=}\DecValTok{18}\NormalTok{,}\DataTypeTok{ylab=}\StringTok{"residuals (predicted-observed)"}\NormalTok{,   }\DataTypeTok{xlab=}\StringTok{"observed"}\NormalTok{,}\DataTypeTok{col=}\StringTok{"blue3"}\NormalTok{) }\CommentTok{# residual plot}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{0}\NormalTok{,}\DataTypeTok{col=}\StringTok{"red4"}\NormalTok{,}\DataTypeTok{lty=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{index_files/figure-latex/unnamed-chunk-11-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(rf.resid.stpi}\OperatorTok{^}\DecValTok{2}\NormalTok{) }\CommentTok{# mean squared error}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 13.43382
+\end{verbatim}
+
+~
+
+The residual plot shows that the model makes around 5\% cover error when
+predicting the distribution of \emph{S. pistillata}, and more error
+would be found in the area with higher cover. This may be because there
+are too little data in our dataset especially in the area with the
+higher cover of \emph{S. pistillata}. The value of mean squared error
+can be used to compare to other models and figure out the best one.
+
+Then, we can have a look on how the individual abiotic variable
+affecting the model with partial plots with the function
+''partialPlot''.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{)) }
+\KeywordTok{partialPlot}\NormalTok{(rf.stpi.min, }\KeywordTok{as.data.frame}\NormalTok{(stpi.train), light)}
+\KeywordTok{partialPlot}\NormalTok{(rf.stpi.min, }\KeywordTok{as.data.frame}\NormalTok{(stpi.train), SST)}
+\KeywordTok{partialPlot}\NormalTok{(rf.stpi.min, }\KeywordTok{as.data.frame}\NormalTok{(stpi.train), Chl_a)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{index_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{dev.off}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## null device 
+##           1
+\end{verbatim}
+
+~
+
+The purpose of the partial plot is to display how the prediction of
+coral cover is changing with the change of each of the three abiotic
+variables. If the line is closer to zero, it means that the given
+variable is not affecting the coral cover at all, while the more the
+line deviating from zero, this variable influences the coral cover more.
+Instead of looking at the value on the y-axis, the relationship between
+the y-axis and the given variable across a specific range is what we
+should focus on. For example, in the partial dependence plot on light,
+when the light intensity becomes stronger, we have more chances to see a
+high cover of \emph{S. pistillata}. This increase of chances is even
+more obvious when the light intensity is between 5 to 15
+W/m\textsuperscript{2}/day and over 25 W/m\textsuperscript{2}/day. Look
+at the partial dependence plot on SST, we found that the cover of
+\emph{S. pistillata} would dramatically decrease when the 2014 mean SST
+is above 26 \textsuperscript{O}C and its cover remains quite consistent
+when it is below 26 OC. Lastly, for the partial dependence plot on
+chlorophyll a, it peaks when the concentration of chlorophyll \emph{a}
+is at around 0.2, 0.4, and 1 mg/m\textsuperscript{3}. By checking the
+tendency and the value in the y-axis on these three partial plots, it
+may explain why light intensity is the most important factor in
+predicting the distribution of \emph{S. pistillatav}.
+
+Now, let's also draw the distribution map of \emph{S. pistillata} with
+cover information to visualize it.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cord <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(cord,stpi}\OperatorTok{$}\NormalTok{SP)}
+\KeywordTok{colnames}\NormalTok{(cord) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{'Tr'}\NormalTok{,}\StringTok{'Lat'}\NormalTok{,}\StringTok{"Lon"}\NormalTok{,}\StringTok{'Cover'}\NormalTok{)}
+\NormalTok{lat <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(cord}\OperatorTok{$}\NormalTok{Lat)}
+\NormalTok{lon <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(cord}\OperatorTok{$}\NormalTok{Lon)}
+\NormalTok{coords <-}\StringTok{ }\KeywordTok{SpatialPoints}\NormalTok{(cord[, }\KeywordTok{c}\NormalTok{(}\StringTok{"Lon"}\NormalTok{, }\StringTok{"Lat"}\NormalTok{)]) }
+\NormalTok{stpi_cord <-}\StringTok{ }\KeywordTok{SpatialPointsDataFrame}\NormalTok{(coords, cord) }
+\KeywordTok{proj4string}\NormalTok{(stpi_cord) <-}\StringTok{ }\KeywordTok{CRS}\NormalTok{(}\StringTok{"+proj=longlat +no_defs +ellps=WGS84"}\NormalTok{, }\DataTypeTok{doCheckCRSArgs =}\NormalTok{ F) }
+\KeywordTok{head}\NormalTok{(stpi_cord)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            coordinates        Tr      Lat      Lon Cover
+## 1 (121.8046, 25.14455) N_CJ_5_T1 25.14455 121.8046    12
+## 2 (121.8046, 25.14455) N_CJ_5_T2 25.14455 121.8046     1
+## 3 (121.8046, 25.14455) N_CJ_5_T3 25.14455 121.8046     4
+## 4 (121.8046, 25.14455) N_CJ_5_T4 25.14455 121.8046     0
+## 5 (121.8046, 25.14455) N_CJ_5_T5 25.14455 121.8046     3
+## 6  (121.9146, 25.1257) N_BT_5_T1 25.12570 121.9146     0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{class}\NormalTok{(stpi_cord)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "SpatialPointsDataFrame"
+## attr(,"package")
+## [1] "sp"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{taiwan_map <-}\StringTok{ }\KeywordTok{fortify}\NormalTok{(taiwan)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Regions defined for each Polygons
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Taiwan.map <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_polygon}\NormalTok{(}\DataTypeTok{data=}\NormalTok{ taiwan_map, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{ long, }\DataTypeTok{y=}\NormalTok{ lat, }\DataTypeTok{group=}\NormalTok{ group), }\DataTypeTok{fill=}\StringTok{'light grey'}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}\DataTypeTok{limits =} \KeywordTok{c}\NormalTok{(}\DecValTok{119}\NormalTok{, }\DecValTok{123}\NormalTok{)) }\OperatorTok{+}\StringTok{ }\CommentTok{# set x and y limt}
+\StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}\DataTypeTok{limits =} \KeywordTok{c}\NormalTok{(}\FloatTok{21.5}\NormalTok{, }\FloatTok{25.5}\NormalTok{)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_minimal}\NormalTok{()}\OperatorTok{+}\StringTok{  }\CommentTok{# background    }
+\StringTok{  }\KeywordTok{coord_fixed}\NormalTok{(}\FloatTok{1.1}\NormalTok{)}\OperatorTok{+}\StringTok{ }\CommentTok{# fix the coordinate}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(cord, }\DataTypeTok{mapping =} \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{ Lon, }\DataTypeTok{y=}\NormalTok{ Lat, }\DataTypeTok{size =}\NormalTok{ Cover),}\DataTypeTok{alpha=}\FloatTok{0.2}\NormalTok{, }\DataTypeTok{color=}\StringTok{"blue"}\NormalTok{) }\OperatorTok{+}\StringTok{ }\CommentTok{# add the location of sampling transects}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position=}\StringTok{"right"}\NormalTok{)}
+
+\NormalTok{Taiwan.map}\OperatorTok{+}\StringTok{ }\KeywordTok{scale_size_continuous}\NormalTok{(}\DataTypeTok{name =} \StringTok{'Cover (m^2)'}\NormalTok{ , }\DataTypeTok{range =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{15}\NormalTok{),}\DataTypeTok{breaks =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{5}\NormalTok{,}\DecValTok{10}\NormalTok{,}\DecValTok{15}\NormalTok{,}\DecValTok{20}\NormalTok{), }\DataTypeTok{labels =} \KeywordTok{c}\NormalTok{(}\StringTok{'0.01'}\NormalTok{,}\StringTok{'0.05'}\NormalTok{,}\StringTok{'0.1'}\NormalTok{,}\StringTok{'0.15'}\NormalTok{,}\StringTok{'0.2'}\NormalTok{)) }\CommentTok{# adjust the size of bubble plot}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{index_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+~
+
+According to this map, \emph{S. pistillata} tends to have higher cover
+in the north of Taiwan while the east and the south have less cover.
+Based on its distribution and the RF model, we can deduce that the
+environment of north Taiwan may have higher light intensity and also
+lower SST. However, in reality, we know that the north generally
+receives lower light intensity than the east and the south do if we
+sample at the same depth, this bias may be caused by the oversampling in
+the shallower water of the north.
+
+Overall, this RF model suggests that the three abiotic variables, SST,
+light at the bottom, and chlorophyll \emph{a}, all positively contribute
+to the prediction of the distribution of \emph{S}. pistillata* with the
+light does it better than the other two variables. With these three
+factors, we can already catch 21.95\% of the total variance.
+Nonetheless, considering the number of observations and also the number
+of variables, this dataset is too small to build a very robust RF model.
+Further sample effort is needed to make this prediction stronger
+especially in places other than the shallow water in the north of
+Taiwan.
+
+~
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{summary}{%
+\section{Summary}\label{summary}}
+
+RF can integrate different types of variables as well as a large amount
+of data, and seek for the complex relationship between the predicted
+variables and the response variables that sometimes the linear-based
+model cannot find. These features allow RF to stand out as one of the
+most popular approaches in modeling species distribution, in which the
+complex and dependent relationship commonly exists within and among
+environmental factors. Furthermore, based on a robust RF model, a
+prediction on the future alteration of species distribution considering
+the human-driven changes in any environmental parameters can be further
+estimated. This information could be quite helpful in conservation.
+
+~
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{reference}{%
+\section{Reference}\label{reference}}
+
+Bruno JF, Stachowicz JJ, Bertness MD (2003) Inclusion of facilitation
+into ecological theory. Trends Ecol Evol 18:119-125
+
+Cutler DR, Edwards TC, Beard KH, Catler A, Hess KT, Gibson J, Lawler JJ
+(2007) Random forest for classification in ecology. Ecology
+88:2783--2792
+
+Elton CS (1927) Animal ecology. Sedgwick \& Jackson, London, U.K
+Grinnell J (1917) The niche-relationships of the California trasher. The
+Auk 34:427-433
+
+Hutchinson GE (1957) Concluding remarks, cold spring harbor symposium.
+Quantitative Biology 22:415-427
+
+Jeffrey S. Evans, Melanie A. Murphy, Zachary A. Holden, Cushman SA
+(2011) Modeling species distribution and change using random forest. In:
+Drew CA, Wiersma YF, Huettmann F (eds) Predictive species and habitat
+modeling in landscape ecology. Springer New York Dordrecht Heidelberg
+London,
+
+Johnson RH (1910) Determinate evolution in the color-pattern of the
+lady-beetles. Carnegie Inst. of Washington, Washington, D.C., USA
+
+Soberon J (2007) Grinnellian and Eltonian niches and geographic
+distributions of species. Ecol Lett 10:1115-1123
+{[}10.1111/j.1461-0248.2007.01107.x{]}
+
+\url{https://builtin.com/data-science/random-forest-algorithm}
+
+\url{https://towardsdatascience.com/understanding-random-forest-58381e0602d2}
+
+\url{https://damariszurell.github.io/SDM-Intro/\#1_Background}
+
+\end{document}
