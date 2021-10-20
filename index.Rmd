@@ -4,6 +4,9 @@ title: 'Advantages and Disadvantages of Random Forest in Modeling Species Distri
 author: "Yuting Vicky Lin"
 date: "2021/10/19"
 output:
+  word_document:
+    toc: yes
+    toc_depth: '2'
   html_document:
     highlight: tango
     theme: united
@@ -230,7 +233,7 @@ mean(rf.resid.stpi^2) # mean squared error
 The residual plot shows that the model makes around 5% cover error when predicting the distribution of *S. pistillata*, and more error would be found in the area with higher cover. This may be because there are too little data in our dataset especially in the area with the higher cover of *S. pistillata*. The value of mean squared error can be used to compare to other models and figure out the best one.
 
 Then, we can have a look on how the individual abiotic variable affecting the model with partial plots with the function ”partialPlot”.
-```{r, include = T, eval=T, message = F} 
+```{r, include = T, eval=T, message = F, results = 'hide'} 
 par(mfrow=c(1,3)) 
 partialPlot(rf.stpi.min, as.data.frame(stpi.train), light)
 partialPlot(rf.stpi.min, as.data.frame(stpi.train), SST)
@@ -269,7 +272,7 @@ Taiwan.map+ scale_size_continuous(name = 'Cover (m^2)' , range = c(0, 15),breaks
 
 &nbsp;
 
-According to this map, *S. pistillata* tends to have higher cover in the north of Taiwan while the east and the south have less cover. Based on its distribution and the RF model, we can deduce that the environment of north Taiwan may have higher light intensity and also lower SST. However, in reality, we know that the north generally receives lower light intensity than the east and the south do if we sample at the same depth, this bias may be caused by the oversampling in the shallower water of the north. 
+According to this map, *S. pistillata* has higher cover in the north of Taiwan while the east and the south have less cover. Based on its distribution and the RF model, we can deduce that *S. pistillata* tends to live in the water with higher light intensity and lower SST, concentrating in north Taiwan. The deduction for the light makes sense because this coral species needs light to support the growth of their zooxanthellate, which can in turn provide the coral species energy. Despite tropical scleractinian corals usually favor warm and bright areas, *S. pistillata* is more abundant in the north where the SST is lower. This might be because this species is not competitive enough to other coral species when the thermal environment is suitable for growth, so they are not abundant in the east and the south where the thermal condition can allow many coral species to develop. However, there is another possibility that this dataset may suffer from oversampling in the shallower water of the north (26% of the transects sampled at < 20 meters in the north, 19% of the transects sampled at < 20 meters in the east, 17% of the transects sampled at < 20 meters in the Orchid Island, Green Island and Kenting are less than 17%). It may make the algorithm have more chances to sample the transects in the north when bootstrapping, hence, the results would bias toward the environment of the north shallow water where is colder and lighter. More sampling effort needs to be added to the areas other than the shallow water in the north of Taiwan to make sure if this can be an issue or not. 
 
 Overall, this RF model suggests that the three abiotic variables, SST, light at the bottom, and chlorophyll *a*, all positively contribute to the prediction of the distribution of *S*. pistillata* with the light does it better than the other two variables. With these three factors, we can already catch 25.95% of the total variance. Nonetheless, considering the number of observations and also the number of variables, this dataset is too small to build a very robust RF model. Further sample effort is needed to make this prediction stronger especially in places other than the shallow water in the north of Taiwan. 
 
