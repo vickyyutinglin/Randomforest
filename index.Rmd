@@ -1,6 +1,5 @@
 ---
-title: 'Advantages and Disadvantages of Random Forest in Modeling Species Distribution:
-  From Theory to Practice'
+title: 'Advantages and Disadvantages of Random Forest in Modeling Species Distribution: From Theory to Practice'
 author: "Yuting Vicky Lin"
 date: "2021/10/19"
 output:
@@ -11,6 +10,7 @@ output:
     toc_depth: 2
     toc_float: yes
 ---
+
 ***
 
 # What is a random forest?
@@ -120,6 +120,36 @@ To demonstrate how to apply RF on SDM in R, I chose three abiotic factors, sea s
 
 &nbsp;
 
+Before starting the analysis, you can download the the datasets (cover of *S. pistillata*, abiotic factors, coordinates of sampling transects, and the Shape file of Taiwan map), and the R manuscript to follow this RF analysis. 
+&nbsp;
+
+```{r , eval = TRUE,  message=F, include=F, warning=F, purl=F, results="hide"}
+options(knitr.duplicate.label = "allow")
+knitr::purl('index.Rmd', documentation = F)
+knitr::purl('Stylophora_pistillata.xlsx', documentation = F)
+knitr::purl('cord.xlsx', documentation = F)
+knitr::purl('TWN_adm0.shp', documentation = F)
+```
+```{r , echo=FALSE, purl=F}
+xfun::embed_file('Stylophora_pistillata.xlsx')
+```
+&nbsp;
+```{r , echo=FALSE, purl=F}
+xfun::embed_file('cord.xlsx')
+```
+&nbsp;
+```{r , echo=FALSE, purl=F}
+xfun::embed_file('TWN_adm0.shp')
+```
+&nbsp;
+```{r , echo=FALSE, purl=F}
+xfun::embed_file('index.R')
+```
+</p>
+
+
+&nbsp;
+
 Package installation 
 ```{r, include = T, eval= T, results = 'hide', message = F, warning = F} 
 # install.pckages(c('readxl','caTools','randomForest','rgdal','ggplot2'))
@@ -138,6 +168,7 @@ setwd('C:\\Users\\USER.DESKTOP-ELH7F84\\OneDrive\\R project\\Randomforest')
 ```
 
 ```{r, include = T, eval= T, results = 'hide', message = F} 
+# setwd('') # set your local path
 stpi <- read_excel("Stylophora_pistillata.xlsx") # import Stylophora pistillata cover and environmental data from 209 transects
 stpi <- stpi[ ,-c(1,5,6)] # remove the column with transect, min SST and max SST information
 cord <- read_excel("cord.xlsx") # import the coordinate of sampling transects
@@ -147,6 +178,10 @@ taiwan <- readOGR('TWN_adm0.shp') # import the OGR file of Taiwan map
 &nbsp;
 
 After importing all the files, let’s start to build the species distribution model with RF. The first thing I do is to divide the whole dataset into training and testing sets with the ratio of 7:3, this ratio can be changed if the new model performed better than this one.
+```{r , include = F, set.seed(2)}
+knitr::opts_chunk$set(cache = T)
+```
+
 ```{r, include = T, eval=T} 
 sample.stpi <- caTools::sample.split(stpi$SP, SplitRatio = .7)
 stpi.train <- subset(stpi, sample.stpi == TRUE)
@@ -158,58 +193,57 @@ dim(stpi.test)
 &nbsp;
 
 Then, I can start to create the model.
-```{r, include = F, set.seed(1)}
-knitr::opts_chunk$set(cache = T)
-```
+
+
 ```{r, include = T, eval=T} 
-set.seed(11) # set a random seed to make the model reproducible
+set.seed(17) # set a random seed to make the model reproducible
 rf.stpi <- randomForest(SP ~ .,data=stpi.train, importance = T) # build the random forest model
 rf.stpi
 ```
 
 &nbsp;
 
-The result of this model shows that the three factors can together explain 24.88% of the total variance. This is not high, but with only three variables, it is also not bad. Still, more abiotic factors are recommended to add to this model to catch more variance. I use 500 trees (R’s default) to build this model, and caution is needed for the number of trees since too many trees may make the model overfitting. Therefore, checking the mean square errors of models created with the different number of trees is recommended.
-```{r, include = T, eval=T} 
+The result of this model shows that the three factors can together explain 27.84% of the total variance. This is not high, but with only three variables, it is also not bad. Still, more abiotic factors are recommended to add to this model to catch more variance. I use 500 trees (R’s default) to build this model, and caution is needed for the number of trees since too many trees may make the model overfitting. Therefore, checking the mean square errors of models created with the different number of trees is recommended.
+```{r,cache.extra = rf.stpi, include = T, eval=T} 
 plot(rf.stpi) # check the mean square error of models
 ```
 
 &nbsp;
 
-From the plot, we know that as more and more trees are built, the errors decrease and eventually become stable. It seems that when the number of trees is around 150, we arrived at the lowest error. We can check it with the “which.min” function.
-```{r, include = T, eval=T} 
+From the plot, we know that as more and more trees are built, the errors decrease and eventually become stable. It seems that when the number of trees is around 300-400, we arrived at the lowest error. We can check it with the “which.min” function.
+
+```{r,cache.extra = rf.stpi, include = T, eval=T} 
 which.min(rf.stpi$mse)
 ```
 
 &nbsp;
 
-It turns out that we can have the lowest error in the RF model with 133 trees, so let’s rebuild the model with this number of trees by using the argument “ntree”.
+It turns out that we can have the lowest error in the RF model with 371 trees, so let’s rebuild the model with this number of trees by using the argument “ntree”.
 
 Then, I can start to create the model.
-```{r, include = T, eval=T} 
-set.seed(1)
-rf.stpi.min <- randomForest(SP ~ .,data=stpi.train, importance = T, ntree=133)
+```{r, cache.extra = stpi.train, include = T, eval=T} 
+rf.stpi.min <- randomForest(SP ~ .,data=stpi.train, importance = T, ntree=371)
 rf.stpi.min
 ```
 
 &nbsp;
 
 The variance explained slightly increase and the error slightly decrease, so this model performs a little bit better than the one with 500 trees. In addition to this hyperparameter, we can also adjust the number of the variables randomly selected at each split with the argument “mtry” to make the model perform better.
-```{r, include = T, eval=T} 
-rf.stpi.min.2 <- randomForest(SP ~ .,data=stpi.train, importance = T,ntree=133, mtry=2)
+```{r, cache.extra = stpi.train, include = T, eval=T} 
+rf.stpi.min.2 <- randomForest(SP ~ .,data=stpi.train, importance = T,ntree=371, mtry=2)
 rf.stpi.min.2
-rf.stpi.min.3 <- randomForest(SP ~ .,data=stpi.train, importance = T,ntree=133, mtry=3)
+rf.stpi.min.3 <- randomForest(SP ~ .,data=stpi.train, importance = T,ntree=371, mtry=3)
 rf.stpi.min.3
 ```
 
 &nbsp;
 
-However, the models with the different number of variables do not perform better than the original one. Hence, we will use the one with mtry =1. 
+The models with the number of variables is two does the best since it has the minimum error. The variance explained also increase a bit. Hence, we will use the one with mtry = 2. 
 
 Now, we can check the importance of those variables in this model with the function “varImpPlot” and” importance”.
 ```{r, include = T, eval=T} 
-varImpPlot(rf.stpi.min)
-importance(rf.stpi.min)
+varImpPlot(rf.stpi.min.2)
+importance(rf.stpi.min.2)
 ```
 
 &nbsp;
@@ -218,7 +252,7 @@ The result shows the importance of variables calculated with the mean decrease i
 
 Now, we can try to validate this model with the testing set by calculating the residuals and the mean squared error.
 ```{r, include = T, eval=T} 
-pred.stpi <- predict(rf.stpi.min, newdata=stpi.test)
+pred.stpi <- predict(rf.stpi.min.2, newdata=stpi.test)
 rf.resid.stpi <- pred.stpi - stpi.test$SP # the residuals
 plot(stpi.test$SP,rf.resid.stpi, pch=18,ylab="residuals (predicted-observed)",   xlab="observed",col="blue3") # residual plot
 abline(h=0,col="red4",lty=2)
@@ -227,20 +261,20 @@ mean(rf.resid.stpi^2) # mean squared error
 
 &nbsp;
 
-The residual plot shows that the model makes around 5% cover error when predicting the distribution of *S. pistillata*, and more error would be found in the area with higher cover. This may be because there are too little data in our dataset especially in the area with the higher cover of *S. pistillata*. The value of mean squared error can be used to compare to other models and figure out the best one.
+The residual plot shows that the error of the model is around 5-10% when predicting the distribution of *S. pistillata*, and more error would be found in the area with higher cover. This may be because there are too little data in our dataset especially in the geographical area with the higher cover of *S. pistillata*. The value of mean squared error can be used to compare to other models and figure out the best one.
 
 Then, we can have a look on how the individual abiotic variable affecting the model with partial plots with the function ”partialPlot”.
 ```{r, include = T, eval=T, message = F, results = 'hide'} 
 par(mfrow=c(1,3)) 
-partialPlot(rf.stpi.min, as.data.frame(stpi.train), light)
-partialPlot(rf.stpi.min, as.data.frame(stpi.train), SST)
-partialPlot(rf.stpi.min, as.data.frame(stpi.train), Chl_a)
+partialPlot(rf.stpi.min.2, as.data.frame(stpi.train), light)
+partialPlot(rf.stpi.min.2, as.data.frame(stpi.train), SST)
+partialPlot(rf.stpi.min.2, as.data.frame(stpi.train), Chl_a)
 dev.off()
 ```
 
 &nbsp;
 
-The purpose of the partial plot is to display how the prediction of coral cover is changing with the change of each of the three abiotic variables. If the line is closer to zero, it means that the given variable is not affecting the coral cover at all, while the more the line deviating from zero, this variable influences the coral cover more. Instead of looking at the value on the y-axis, the relationship between the y-axis and the given variable across a specific range is what we should focus on. For example, in the partial dependence plot on light, when the light intensity becomes stronger, we have more chances to see a high cover of *S. pistillata*. This increase of chances is even more obvious when the light intensity is between 5 to 15 W/m^2^/day and over 25 W/m^2^/day. Look at the partial dependence plot on SST, we found that the cover of *S. pistillata* would dramatically decrease when the 2014 mean SST is above 26 ^O^C and its cover remains quite consistent when it is below 26 OC. Lastly, for the partial dependence plot on chlorophyll a, it peaks when the concentration of chlorophyll *a* is at around 0.2, 0.4, and 1 mg/m^3^. By checking the tendency and the value in the y-axis on these three partial plots, it may explain why light intensity is the most important factor in predicting the distribution of *S. pistillatav*.
+The purpose of the partial plot is to display how the prediction of coral cover is changing with the change of each of the three abiotic variables. If the line is closer to zero, it means that the given variable is not affecting the coral cover at all, while the more the line deviating from zero, this variable influences the coral cover more. Instead of looking at the value on the y-axis, the relationship between the y-axis and the given variable across a specific range is what we should focus on. For example, in the partial dependence plot on light, when the light intensity becomes stronger, we have more chances to see a high cover of *S. pistillata*. This increase of chances is even more obvious when the light intensity is between 5 to 15 W/m^2^/day and over 25 W/m^2^/day. Look at the partial dependence plot on SST, we found that the cover of *S. pistillata* would dramatically decrease when the 2014 mean SST is above 26 °C and its cover remains quite consistent when it is below 26 °C. Lastly, for the partial dependence plot on chlorophyll a, it peaks when the concentration of chlorophyll *a* is at around 0.2, 0.4, and 1 mg/m^3^. By checking the tendency and the value in the y-axis on these three partial plots, it may explain why light intensity is the most important factor in predicting the distribution of *S. pistillata*.
 
 Now, let’s also draw the distribution map of *S. pistillata* with cover information to visualize it. 
 ```{r, include = T, eval=T} 
@@ -271,7 +305,7 @@ Taiwan.map+ scale_size_continuous(name = 'Cover (m^2)' , range = c(0, 15),breaks
 
 According to this map, *S. pistillata* has higher cover in the north of Taiwan while the east and the south have less cover. Based on its distribution and the RF model, we can deduce that *S. pistillata* tends to live in the water with higher light intensity and lower SST, concentrating in north Taiwan. The deduction for the light makes sense because this coral species needs light to support the growth of their zooxanthellate, which can in turn provide the coral species energy. Despite tropical scleractinian corals usually favor warm and bright areas, *S. pistillata* is more abundant in the north where the SST is lower. This might be because this species is not competitive enough to other coral species when the thermal environment is suitable for growth, so they are not abundant in the east and the south where the thermal condition can allow many coral species to develop. However, there is another possibility that this dataset may suffer from oversampling in the shallower water of the north (26% of the transects sampled at < 20 meters in the north, 19% of the transects sampled at < 20 meters in the east, 17% of the transects sampled at < 20 meters in the Orchid Island, Green Island and Kenting are less than 17%). It may make the algorithm have more chances to sample the transects in the north when bootstrapping, hence, the results would bias toward the environment of the north shallow water where is colder and lighter. More sampling effort needs to be added to the areas other than the shallow water in the north of Taiwan to make sure if this can be an issue or not. 
 
-Overall, this RF model suggests that the three abiotic variables, SST, light at the bottom, and chlorophyll *a*, all positively contribute to the prediction of the distribution of *S*. pistillata* with the light does it better than the other two variables. With these three factors, we can already catch 25.95% of the total variance. Nonetheless, considering the number of observations and also the number of variables, this dataset is too small to build a very robust RF model. Further sample effort is needed to make this prediction stronger especially in places other than the shallow water in the north of Taiwan. 
+Overall, this RF model suggests that the three abiotic variables, SST, light at the bottom, and chlorophyll *a*, all positively contribute to the prediction of the distribution of *S. pistillata* with the light does it better than the other two variables. With these three factors, we can already catch 25.95% of the total variance. Nonetheless, considering the number of observations and also the number of variables, this dataset is too small to build a very robust RF model. Further sample effort is needed to make this prediction stronger especially in places other than the shallow water in the north of Taiwan. 
 
 &nbsp;
 
