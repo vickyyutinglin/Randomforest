@@ -3,7 +3,7 @@ output_dir: "."
 navbar:
   title: "Stats & R!"
   left:
-    - text: "Random forest"
+    - text: "Random Forest"
       href: index.html
     - text: "About Me"
       href: about.html
