@@ -1,4 +1,5 @@
-# install.pckages(c('readxl','caTools','randomForest','rgdal','ggplot2'))
+# install.packages(c('readxl','caTools','randomForest','rgdal','ggplot2'))
+# update.packages()
 library(readxl)
 library(caTools)
 library(randomForest)
@@ -25,31 +26,32 @@ set.seed(17) # set a random seed to make the model reproducible
 rf.stpi <- randomForest(SP ~ .,data=stpi.train, importance = T) # build the random forest model
 rf.stpi
 
+set.seed(17) # set a random seed to make the model reproducible
 plot(rf.stpi) # check the mean square error of models
 
 which.min(rf.stpi$mse)
 
-rf.stpi.min <- randomForest(SP ~ .,data=stpi.train, importance = T, ntree=371)
+rf.stpi.min <- randomForest(SP ~ .,data=stpi.train, importance = T, ntree=21)
 rf.stpi.min
 
-rf.stpi.min.2 <- randomForest(SP ~ .,data=stpi.train, importance = T,ntree=371, mtry=2)
+rf.stpi.min.2 <- randomForest(SP ~ .,data=stpi.train, importance = T,ntree=21, mtry=2)
 rf.stpi.min.2
-rf.stpi.min.3 <- randomForest(SP ~ .,data=stpi.train, importance = T,ntree=371, mtry=3)
+rf.stpi.min.3 <- randomForest(SP ~ .,data=stpi.train, importance = T,ntree=21, mtry=3)
 rf.stpi.min.3
 
-varImpPlot(rf.stpi.min.2)
-importance(rf.stpi.min.2)
+varImpPlot(rf.stpi.min)
+importance(rf.stpi.min)
 
-pred.stpi <- predict(rf.stpi.min.2, newdata=stpi.test)
+pred.stpi <- predict(rf.stpi.min, newdata=stpi.test)
 rf.resid.stpi <- pred.stpi - stpi.test$SP # the residuals
 plot(stpi.test$SP,rf.resid.stpi, pch=18,ylab="residuals (predicted-observed)",   xlab="observed",col="blue3") # residual plot
 abline(h=0,col="red4",lty=2)
 mean(rf.resid.stpi^2) # mean squared error
 
 par(mfrow=c(1,3)) 
-partialPlot(rf.stpi.min.2, as.data.frame(stpi.train), light)
-partialPlot(rf.stpi.min.2, as.data.frame(stpi.train), SST)
-partialPlot(rf.stpi.min.2, as.data.frame(stpi.train), Chl_a)
+partialPlot(rf.stpi.min, as.data.frame(stpi.train), light)
+partialPlot(rf.stpi.min, as.data.frame(stpi.train), SST)
+partialPlot(rf.stpi.min, as.data.frame(stpi.train), Chl_a)
 dev.off()
 
 cord <- cbind(cord,stpi$SP)
