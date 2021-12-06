@@ -16,12 +16,12 @@ output:
 ***
 # Species distribution model (SDM)
 
-The concept of species distribution is deeply connected to the niche theory that begins to be formulated in the early 1990 (Johnson 1910; Grinnell 1917; Elton 1927) and was later innovated by Hutchinson in 1957. He first differentiated the niche into the fundamental and the realized one. The former measures the geographical area where the species can have a positive population growth considering all the abiotic factors, while the latter encompasses not only the abiotic effect but also the competition among species. Therefore, it made the realized niche smaller than the fundamental one. However,  nowadays, we know that some biotic effects such as facilitation (positive interspecific interactions) can help the population positively to grow (Bruno et al. 2003). Since 2007, Soberon integrated the third critical factor, species dispersal or movement capacity, in the niche theory to consider if a species can reach a given area. He argued that before assessing if a particular species can thrive in the geographical area of interest where both abiotic and biotic conditions can satisfy the requirement of species, the species’ ability to arrive at that area must be examined. This is called biotic-abiotic-movement (BAM) concept that incorporates the interplay among these three factors into the assessment of species niche (Figure 1).
+The concept of species distribution is deeply connected to the niche theory that begins to be formulated in the early 1900 (Johnson 1910; Grinnell 1917; Elton 1927) and was later innovated by Hutchinson in 1957. He first differentiated the niche into the fundamental and the realized one. The former measures the geographical area where the species can have a positive population growth considering all the abiotic factors, while the latter encompasses not only the abiotic effect but also the competition among species. Therefore, it made the realized niche smaller than the fundamental one. However,  nowadays, we know that some biotic effects such as facilitation (positive interspecific interactions) can help the population positively to grow (Bruno et al. 2003). Since 2007, Soberon integrated the third critical factor, species dispersal or movement capacity, in the niche theory to consider if a species can reach a given area. He argued that before assessing if a particular species can thrive in the geographical area of interest where both abiotic and biotic conditions can satisfy the requirement of species, the species’ ability to arrive at that area must be examined. This is called biotic-abiotic-movement (BAM) concept that incorporates the interplay among these three factors into the assessment of species niche (Figure 1).
 
 
 <center>
 
-![.](C:/Users/USER.DESKTOP-ELH7F84/OneDrive/R project/Randomforest/Fig3.png){width=40%}
+![.](C:/Users/USER.DESKTOP-ELH7F84/OneDrive/R project/Randomforest/Fig1.png){width=40%}
 </center>
 **Figure 1.** A BAM diagram suggests the three factors affecting the distribution of a species, abiotic factors (A), biotic factors (B), and dispersal or movement ability (M). It is adapted from Soberon (2007). The blue area between A and B indicates the area where the species can potentially have a positive growth considering its abiotic requirement and the prevailing biotic process, or also called “realized niche”. The intersection among A, B, and M (close circle area) represents the area where the species can move in and increase its population
 
@@ -47,7 +47,7 @@ Random forest (RF) is a supervised learning algorithm that needs data to train. 
 
 RF uses a bootstrapped procedure on the dataset to repeatedly create many subsets. Each of the subsets is later used to fit either a classification or a regression tree, and the final decision is made based on the mode or the average from those trees (Figure 2). Subsequently, an optimal model can be obtained by converging many classification and regression trees (CARTs) fitted by the bootstrapped samples. Based on this best model, we can predict the future observations. Here, I will explain step by step how does this algorithm work and terminology should be known to understand this algorithm.
 
-![**Figure 2.** The framework of the RF algorithm](C:/Users/USER.DESKTOP-ELH7F84/OneDrive/R project/Randomforest/Fig1.png)
+![**Figure 2.** The framework of the RF algorithm](C:/Users/USER.DESKTOP-ELH7F84/OneDrive/R project/Randomforest/Fig2.png)
 
 &nbsp;
 
@@ -56,7 +56,7 @@ RF uses a bootstrapped procedure on the dataset to repeatedly create many subset
 Assuming I have a dataset (N) and the independent variables (M) that I think are important features to delineate those observations. By applying RF to this dataset, I can **(1) find out the best model to fit this dataset, (2) predict the future observations according to this model, and (3) calculate the importance of those feature variables.** These three tasks are very helpful for solving the research questions regarding to SDM, and that is probably why RF is attractive to these users. The procedure of this algorithm is:
 
 1.	Build n bootstrap replicates from the dataset N with the equal sampling size (with replacement). For each replicate, a tree will be created. In other words, n is also the number of trees to fit.
-2.	Divide each bootstrap replicate into a training and a testing set. The ratio of data in two sets can be 9:1, 8:2, 7:3, or any ratio, there is no fixed rule. It depends on if the performance of the fianl model meet your expectation or not.
+2.	Divide each bootstrap replicate into a training and a testing set. The ratio of data in two sets can be 9:1, 8:2, 7:3, or any ratio, there is no fixed rule. It depends on if the performance of the final model meet your expectation or not.
 3.	For each replicate, fit a tree to the training set. At each node of the tree, a permutation procedure randomly selecting m feature variables from the variable set (M) is conducted to find out the best split based on the Gini Index (see below) that can quantify the within-node entropy. After this tree is successfully made, it would be validated with the testing set. The prediction error of the classification tree is measured by out-of-bag (bootstrapping) error while the one of the regression tree is calculated by mean squared error. 
 4.	Asemble n trees to find out the best model.
 5.	Based on this model, a prediction can be made for the future observations.
@@ -75,7 +75,7 @@ where p~i~ denotes the probability of an element being classified to a specific 
 
 In each split of a tree, Gini Indeces for each of the variables randomly picked up from its variable set are calculated, and the one with the lowest Gini Index is chosen as the given split (Figure 3). For the part of variables, the more a variable contributes to the prediction process, the more chances it would be retained as the split. While for the observation, the more binary decisions the CART makes, the more similar the feature variables of the subset groups (Figure 3). Nonetheless, more splits on a tree do not necessarily make the model perform better, too many splits may lead to the overfitting of the model.
 
-![**Figure 3.** A CART trying to classify corals based on their morphology and color. The entropy of the dataset decreases each time a split is made.](C:/Users/USER.DESKTOP-ELH7F84/OneDrive/R project/Randomforest/Fig2.png)
+![**Figure 3.** A CART trying to classify corals based on their morphology and color. The entropy of the dataset decreases each time a split is made.](C:/Users/USER.DESKTOP-ELH7F84/OneDrive/R project/Randomforest/Fig3.png)
 
 &nbsp;
 
