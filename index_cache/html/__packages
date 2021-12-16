@@ -6,3 +6,5 @@ sp
 rgdal
 ggplot2
 rmarkdown
+sf
+tmap
