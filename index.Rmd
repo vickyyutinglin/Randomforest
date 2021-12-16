@@ -2,7 +2,6 @@
 title: 'Advantages and Disadvantages of Random Forest in Modeling Species Distribution: From Theory to Practice'
 author: "Yuting Vicky Lin"
 date: "2021/12/16"
-
   
 output:
   html_document:
