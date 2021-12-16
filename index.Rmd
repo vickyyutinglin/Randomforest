@@ -138,7 +138,7 @@ To demonstrate how to apply RF on SDM in R, I chose three abiotic factors, sea s
 &nbsp;
 
 ## Download the data
-Before starting the analysis, you can download the the datasets (cover of *S. pistillata* and abiotic factors in the sampling sites, the abiotic factors around Taiwan, coordinates of sampling transects, the three map files of Taiwan, and the R script to run the following analyses), and the R manuscript to follow this RF analysis. 
+Before starting the analysis, you can download the the datasets (cover of *S. pistillata* and abiotic factors in the sampling sites, the abiotic factors around Taiwan, coordinates of sampling transects, the three map files of Taiwan), and the R manuscript to follow this RF analysis. 
 &nbsp;
 
 ```{r , eval = TRUE,  message=F, include=F, warning=F, purl=F, results="hide"}
@@ -185,7 +185,7 @@ xfun::embed_file('index.R')
 
 ## Start the analysis
 
-Package installation 
+### Package installation 
 ```{r, include = T, eval= T, results = 'hide', message = F, warning = F} 
 # install.packages(c('readxl','randomForest','rgdal','ggplot2','sf','tmap','sp'))
 # update.packages()
@@ -200,7 +200,7 @@ library(sp)
 
 &nbsp;
 
-Data importation
+### Data importation
 ```{r, include = F, eval= T, results = 'hide', message = F} 
 setwd('C:\\Users\\USER.DESKTOP-ELH7F84\\OneDrive\\R project\\Randomforest')
 ```
@@ -216,15 +216,16 @@ pred.env <- pred.env[,-1]
 ```
 
 
-After importing all the files, let’s start to build the species distribution model with RF. The first thing I do is to divide the whole dataset into training and testing sets with the ratio of 7:3, this ratio can be changed if the new model performed better than this one.
+After importing all the files, let’s start to build the species distribution model with RF. 
 ```{r , include = F, set.seed(2)}
 knitr::opts_chunk$set(cache = T)
 ```
 
 &nbsp;
 
-Then, I can start to create the model.
+### Model construction
 
+Then, I can start to create the model.
 
 ```{r, cache.extra = stpi, include = T, eval=T} 
 set.seed(1) # set a random seed to make the model reproducible
@@ -256,12 +257,13 @@ The result of this model shows that the three factors can together explain 25.43
   <body>
     <div class="boxed">
     
-* Notice: despite we use the same dataset, the RF models generated each time would be slightly different from the ones here. This is normal because the RF contains the bootstrapping process making the trees constructed each time are different. However, we would like our analyses being reproducible, the function "set.seed" is then useful here. You can use this function to fix the outcome as long as you fill in the same number each time  you produce the model so that the result would be reproducible. As such, the result you get may be different from this demonstration. 
+* Notice: despite we use the same dataset, the RF models generated each time would be slightly different from the ones here. This is normal because the RF contains the bootstrapping process making the trees constructed each time are different. However, we would like our analyses to be reproducible, the function "set.seed" is then useful here. You can use this function to fix the outcome as long as you fill in the same number each time  you produce the model so that the result would be reproducible. As such, the result you get may be different from this demonstration. 
 
     </div>
   </body>
 
 &nbsp;
+
 ```{r,cache.extra = rf.stpi, include = T, eval=T} 
 plot(rf.stpi) # check the mean square error of models
 ```
@@ -305,7 +307,7 @@ The models with 1 variables tried at each split does the best since it has the m
     <div class="boxed">
 **To split the whole dataset into training and testing set in RF?**
 
-Some people may argue to split the whole dataset into training and testing set before conducting the RF so that the model can be validated later on. However, it is not an obligation to do so since when conducting RF (thereby same for the randomforest function in R), it bootstraps the whole dataset and further classify each replicate into training and testing set, then fit a tree with the training set. In other word, each observation would be excluded for multiple time when building the trees during this bootstrapping process. The total error of this model (out-of-bag error or mean squared error) is then computed by averaging all the errors calculated based on each observation. Therefore, based on this process, the error itself is already able to represent the validation error.
+Some people may argue to split the whole dataset into training and testing set before conducting the RF so that the model can be validated later on. However, it is not an obligation to do so since when conducting the randomforest function in R, it already bootstraps the whole dataset and further classify each replicate into training and testing set, then fit a tree with the training set. In other word, each observation would be excluded for multiple time when building the trees during this bootstrapping process. The total error of this model (out-of-bag error or mean squared error) is then computed by averaging all the errors calculated based on each observation. Therefore, based on this process, the error itself is already able to represent the validation error.
 However, depends on your dataset and purpose, you can still split the dataset and do the cross-validation. People may do so in the following situations:
 
 (1) **Big dataset.** When your dataset is big enough, it can allow you to robustly validate your model with the testing set (that is why I do not demonstrate this part because the dataset we use here is relatively small). 
@@ -319,6 +321,8 @@ However, depends on your dataset and purpose, you can still split the dataset an
 
 
 &nbsp;
+
+### Performance of the model
 
 Now, we can check the performance of this model by calculating the residuals and the mean squared error. 
 We first use the whole dataset to run the prediction of this model and check the difference between the observed and the predicted values, which is the residuals. 
@@ -338,9 +342,11 @@ Then, let's check the mean squared error of this model.
 ```{r,cache.extra = stpi, include = T, eval=T} 
 mean(rf.resid.stpi^2) # mean squared error
 ```
-This value alone might not be able to tell us the quality of this model. However, it is important when we would like to compare this rf model to other ones (eg. GLMs). We can use this mean squared error to make a comparision, the lower it is, the better it is. Eventually, we can figure out the best model. 
+This value alone might not be able to tell us the quality of this model. However, it is important when we would like to compare this RF model to other ones (eg. GLMs). We can use this mean squared error to make a comparision, the lower it is, the better it is. Eventually, we can figure out the best model. 
 
 &nbsp;
+
+### Prediction
 
 After selecting the best hyperparameter setting and check its performance, we can start to use this model to predict. In this case, the first question comes to our mind may be the prediction of coral cover on the areas where we do not sample. Therefore, I extract the 0.1 x 0.1 degree grid data of three environmental factors around Taiwan (latitude: 20-26°N, longitude: 115-125 °E), and would like to predict the cover of *S. pistillata* with these factors. To make the result easier to compart and more visualize, I make the prediction by depths.
 ```{r,cache.extra = stpi, include = T, eval=T} 
@@ -369,15 +375,19 @@ According to the outcome, the predicted coral covers decrease as the depths incr
 
 &nbsp;
 
+### Variable importance
+
 In addition to the prediction, the other information that people may try to get from this RF model is the variable importance. This information can also help us better explain the predicted pattern we just obtain. Now, we can check the importance of those variables in this model with the function “varImpPlot” and ”importance”.
 ```{r,cache.extra = stpi, include = T, eval=T} 
 varImpPlot(rf.stpi.min)
 importance(rf.stpi.min)
 ```
 
-The result shows the importance of variables calculated with the mean decrease in accuracy and with the Gini Index. Both suggest that light is the most important factor in driving the distribution of *S. pistillata*. However, the former shows that the chlorophyll *a* is the second important variable followed by SST while the later suggests the reverse condition for these two factors.
+The result shows the importance of variables calculated with the mean decrease in accuracy and with the Gini Index. Both suggest that light is the most important factor in driving the distribution of *S. pistillata*. However, the former shows that the chlorophyll *a* is the second important variable followed by SST while the later suggests the reverse for these two factors.
 
 &nbsp;
+
+### The effect of abiotic factors on the coral cover prediction
 
 Then, we can have a look on how the individual abiotic variable affecting the model with partial plots with the function ”partialPlot”.
 ```{r,cache.extra = stpi, include = T, eval=T, message = F, results = 'hide'} 
@@ -388,14 +398,16 @@ partialPlot(rf.stpi.min, as.data.frame(stpi), Chl_a)
 dev.off()
 ```
 
-The purpose of the partial plot is to display how the prediction of coral cover is changing with the change of each of the three abiotic variables. If the line is closer to zero, it means that the given variable is not affecting the coral cover at all, while the more the line deviating from zero, this variable influences the coral cover more. For example, from the three plots, we can tell that the light has more influence on the prediction of the coral cover than the other two factors.
+The purpose of the partial plot is to display how the prediction of coral cover is changing with the change of each of the three abiotic variables. If the line is closer to zero, it means that the given variable is not affecting the coral cover at all, while the more the line deviating from zero, this variable influences the coral cover more. For example, from the three plots above, we can tell that the light has more influence on the prediction of the coral cover than the other two factors.
 
-Instead of looking at the value on the y-axis, the relationship between the y-axis and the given variable across a specific range is what we should focus on. For example, in the partial dependence plot on light, when the light intensity becomes stronger we have more chances to see a high cover of *S. pistillata*. This increase of chances is even more obvious when the light intensity is between 5 to 15 W/m^2^/day and over 25 W/m^2^/day. Look at the partial dependence plot on SST, we found that the cover of *S. pistillata* would dramatically decrease when the 2014 mean SST is above 26 °C and its cover remains quite consistent when it is below 26 °C. Lastly, for the partial dependence plot on chlorophyll *a*, it peaks when the concentration of chlorophyll *a* is at around 0.2, 0.4, and 1 mg/m^3^. By checking the tendency and the value in the y-axis on these three partial plots, it may explain why light intensity is the most important factor in predicting the distribution of *S. pistillata*.
+Instead of looking at the value on the y-axis, the relationship between the y-axis and the given variable across a specific range is what we should focus on. For example, in the partial dependence plot on light, when the light intensity becomes stronger we have more chances to see a high cover of *S. pistillata*. This increase of chances is even more obvious when the light intensity is between 5 to 15 W/m^2^/day and over 25 W/m^2^/day. Look at the partial dependence plot on SST, we found that the cover of *S. pistillata* would dramatically decrease when the 2014 mean SST is above 26 °C and its cover remains quite consistent when it is below 26 °C. Lastly, for the partial dependence plot on chlorophyll *a*, it peaks when the concentration of chlorophyll *a* is at around 0.2, 0.4, and 1 mg/m^3^. By checking the tendency and the value in the y-axis on these three partial plots, it could explain why light intensity is the most important factor in predicting the distribution of *S. pistillata*.
 
 &nbsp;
 
+### Species distribution map (observed and predicted)
+
 Now, let’s also draw the distribution map of *S. pistillata* with observed and predicted cover information to visualize it. 
-Since I would like to use a grid map with 0.1 x 0.1 degree resolution to visualize it (same than the resolution of environmental factors used in the prediction), I have to figure out which grids my sampling sites locate in. Consequently, I write a function to figure out which grids my sampling sites locate in and the observed and predicted coral cover in these grids. In this function, I can specify the coordinate matrix (with coordinate, depth, observed, predicted coral cover information), the depths and the grid resolution (degree) I would like to use.  I also average the cover from different transects if the number of the transects in one grid is more than one. The outcomes of this function contain three data frames with the information about 1) the grids my sampling sites locate in, 2) the summary of the observed and predicted coral cover in each grid, and 3) the observed and predicted coral cover in each grid (1 means there is no cover data). Then, I use the information to make the observed and predicted maps in my sampling sites with the “tmap” package in R.
+Since I would like to use a grid map with 0.1 x 0.1 degree resolution to visualize it (same than the resolution of environmental factors used in the prediction), I have to figure out which grids my sampling sites locate in. Consequently, I write a function to figure out which grids my sampling sites locate in and the observed and predicted coral cover in these grids, and also average the cover of transects if the number of the transects in one grid is more than one. In this function, I can specify the coordinate matrix (with coordinate, depth, observed, predicted coral cover information), the depths and the grid resolution (degree) I would like to use. The outcomes of this function contain three data frames with the information about 1) the grids my sampling sites locate in, 2) the summary of the observed and predicted coral cover in each grid, and 3) the observed and predicted coral cover in each grid (1 means there is no cover data). Then, I use the outcome of this function to make the observed and predicted maps in my sampling sites with the “tmap” package in R.
 ```{r, cache.extra = stpi, include = T, eval=T, message = F, results = 'hide', warning=FALSE} 
 taiwan.sf <- st_as_sf(taiwan) # tranform the sp file to sf file 
 cord.all <- cbind(cord, stpi.data, pred.stpi) # create a matrix with coordinate, observed, predicted cover for the sampling sites
@@ -489,11 +501,11 @@ tm_shape(taiwan.sf) +
 ```
 
 
-The observed and predicted maps produced are almost identical except that the coral cover at 5 and 10 meters in the north are slightly different. Both of them show that *S. pistillata* has higher cover in the north of Taiwan while the east and the south have less cover. Also, the cover is higher at 5 and 10 meters. 
+The observed and predicted maps are almost identical except that the coral cover at 5 and 10 meters in the east and the north are slightly different. Both of them show that *S. pistillata* has higher cover in  the east and the north of Taiwan while the south have less cover. Also, the cover is higher at 5 and 10 meters. 
 
 &nbsp;
 
-Let's also draw the predicted map for all Taiwan.
+Let's also draw the predicted map for all the waters around Taiwan.
 ```{r,cache.extra = stpi, include = T, eval=T, message = F} 
 # grid with coral cover prediction
 pred.5.map <- pred.5 ; pred.10.map <- pred.10
@@ -520,7 +532,7 @@ tm_shape(taiwan.sf) +
 ```
 
 
-This predicted map shows when approaching to the deeper depth, the cover of *S. pistillata* strongly decrease starting from the western waters first. The missing data mainly concentrate in the eastern and northern waters. Note that this prediction is based on the three environmental factors only, the real bathymetry is not considered here.
+This predicted map shows that the cover of *S. pistillata* strongly decrease when approaching to the deeper depth. The cover in the western waters is generally less than that in the south except that more cover can be found in some areas of the western waters at 5 meters. The missing data mainly concentrate in the eastern and northern waters. Note that this prediction is based on the three environmental factors only, the real bathymetry is not considered here.
 
 &nbsp;
 
