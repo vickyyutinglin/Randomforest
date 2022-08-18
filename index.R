@@ -8,7 +8,7 @@ library(sf)
 library(tmap)
 library(sp)
 
-setwd('C:\\Users\\USER.DESKTOP-ELH7F84\\OneDrive\\R project\\Randomforest')
+setwd('C:\\Users\\Vicky\\OneDrive\\R project\\Randomforest')
 
 # setwd('') # set your local path
 stpi.data <- read_excel("Stylophora_pistillata.xlsx") # import Stylophora pistillata cover and environmental data from 209 transects

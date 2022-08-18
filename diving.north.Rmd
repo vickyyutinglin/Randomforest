@@ -2,7 +2,7 @@
 title: "Diving spots in North Taiwan"
 output: 
   html_document:
-    theme: united
+    theme: sandstone
     highlight: tango
     
 ---

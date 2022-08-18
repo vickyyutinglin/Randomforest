@@ -2,7 +2,7 @@
 title: "Yuting Vicky Lin"
 output: 
   html_document:
-    theme: united
+    theme: sandstone
     highlight: tango
 
 ---

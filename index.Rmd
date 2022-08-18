@@ -1,12 +1,11 @@
 ---
 title: 'Advantages and Disadvantages of Random Forest in Modeling Species Distribution: From Theory to Practice'
-author: "Yuting Vicky Lin"
 date: "2021/12/16"
   
 output:
   html_document:
+    theme: sandstone
     highlight: tango
-    theme: united
     toc: yes
     toc_depth: 2
     toc_float: yes
@@ -21,7 +20,7 @@ The concept of species distribution is deeply connected to the niche theory that
 
 <center>
 
-![.](C:/Users/USER.DESKTOP-ELH7F84/OneDrive/R project/Randomforest/Fig1.png){width=40%}
+![.](C:/Users/Vicky/OneDrive/R project/Randomforest/Fig1.png){width=40%}
 </center>
 **Figure 1.** A BAM diagram suggests the three factors affecting the distribution of a species, abiotic factors (A), biotic factors (B), and dispersal or movement ability (M). It is adapted from Soberon (2007). The blue area between A and B indicates the area where the species can potentially have a positive growth considering its abiotic requirement and the prevailing biotic process, or also called “realized niche”. The intersection among A, B, and M (close circle area) represents the area where the species can move in and increase its population
 
@@ -47,7 +46,7 @@ Random forest (RF) is a supervised learning algorithm that needs data to train. 
 
 RF uses a bootstrapped procedure on the dataset to repeatedly create many subsets. Each of the subsets is later used to fit either a classification or a regression tree, and the final decision is made based on the mode or the average from those trees (Figure 2). Subsequently, an optimal model can be obtained by converging many classification and regression trees (CARTs) fitted by the bootstrapped samples. Based on this best model, we can predict the future observations. Here, I will explain step by step how does this algorithm work and terminology should be known to understand this algorithm.
 
-![**Figure 2.** The framework of the RF algorithm](C:/Users/USER.DESKTOP-ELH7F84/OneDrive/R project/Randomforest/Fig2.png)
+![**Figure 2.** The framework of the RF algorithm](C:/Users/Vicky/OneDrive/R project/Randomforest/Fig2.png)
 
 &nbsp;
 
@@ -75,7 +74,7 @@ where p~i~ denotes the probability of an element being classified to a specific 
 
 In each split of a tree, Gini Indeces for each of the variables randomly picked up from its variable set are calculated, and the one with the lowest Gini Index is chosen as the given split (Figure 3). For the part of variables, the more a variable contributes to the prediction process, the more chances it would be retained as the split. While for the observation, the more binary decisions the CART makes, the more similar the feature variables of the subset groups (Figure 3). Nonetheless, more splits on a tree do not necessarily make the model perform better, too many splits may lead to the overfitting of the model.
 
-![**Figure 3.** A CART trying to classify corals based on their morphology and color. The entropy of the dataset decreases each time a split is made.](C:/Users/USER.DESKTOP-ELH7F84/OneDrive/R project/Randomforest/Fig3.png)
+![**Figure 3.** A CART trying to classify corals based on their morphology and color. The entropy of the dataset decreases each time a split is made.](C:/Users/Vicky/OneDrive/R project/Randomforest/Fig3.png)
 
 &nbsp;
 
@@ -202,7 +201,7 @@ library(sp)
 
 ### Data importation
 ```{r, include = F, eval= T, results = 'hide', message = F} 
-setwd('C:\\Users\\USER.DESKTOP-ELH7F84\\OneDrive\\R project\\Randomforest')
+setwd('C:\\Users\\Vicky\\OneDrive\\R project\\Randomforest')
 ```
 
 ```{r, include = T, eval= T, results = 'hide', message = F} 
