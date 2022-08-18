@@ -8,7 +8,13 @@ output:
 ---
 ***
 
-[Research Gate!](https://www.researchgate.net/profile/Yuting-Lin-7) | [Lab web!](https://www.dipintothereef.com/)
+[Research Gate](https://www.researchgate.net/profile/Yuting-Lin-7) | [Lab web](https://www.dipintothereef.com/)
+
+PhD Candidate
+
+Room 400, No. 1, Sec. 4, Roosevelt Rd., Institute of Oceanography, National Taiwan University, Taipei, 10617, Taiwan 
+
++886-2-33661393
 
 ***
 
@@ -49,5 +55,5 @@ Last updated: 2022.8.18
 
 
 
-![Me as a diver :D](C:/Users/Vicky/OneDrive/R project/Randomforest/me.jpg){width=30%}
+
 

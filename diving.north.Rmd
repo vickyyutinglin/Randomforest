@@ -7,5 +7,5 @@ output:
     
 ---
 
+![Diving in Chaojing!](C:/Users/Vicky/OneDrive/R project/Randomforest/me.jpg){width=30%} 
 
-## Hello
