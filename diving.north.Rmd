@@ -1,8 +1,5 @@
 ---
 title: "Diving spots in North Taiwan"
-output: html_document
-date: "2022-08-18"
-
 output: 
   html_document:
     theme: united
@@ -10,8 +7,5 @@ output:
     
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 ## Hello
