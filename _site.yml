@@ -1,9 +1,15 @@
 name: "Stats & R!"
 output_dir: "."
 navbar:
-  title: "Stats & R!"
+  title: "🌊 Marine Ecology & Stats 🌊"
   left:
-    - text: "Random Forest"
-      href: index.html
     - text: "About Me"
       href: about.html
+    - text: "Stats"
+      menu:
+       - text: "Random Forest"
+         href: index.html
+    - text: "Visited diving spots"
+      menu:
+       - text: "North Taiwan"
+         href: diving.north.html

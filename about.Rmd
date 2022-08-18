@@ -1,16 +1,53 @@
 ---
-title: "About me"
+title: "Yuting Vicky Lin"
 output: 
   html_document:
     theme: united
     highlight: tango
 
 ---
+***
 
-I am Yuting Vicky Lin, a PhD student in Institute of Oceanography, National Taiwan University. 
+[Research Gate!](https://www.researchgate.net/profile/Yuting-Lin-7) | [Lab web!](https://www.dipintothereef.com/)
 
-![This is me :D](C:/Users/USER.DESKTOP-ELH7F84/OneDrive/R project/Randomforest/me.jpg){width=30%}
+***
 
-[Visit my Research Gate!](https://www.researchgate.net/profile/Yuting-Lin-7)
+I am currently a PhD candidate in the Institute of Oceanography, National Taiwan University. I spent two years for my master's degree and four years for my PhD under the supervision of Dr. Vianney Denis.
 
-[Visit my lab web!](https://www.dipintothereef.com/)
+My research focuses on community ecology, benthic ecology, coral reef ecology, conservation, and the impact of climate change on marine ecosystems. My PhD project is (1) to identify different marine coastal benthic communities, including those found in marginal areas of tropical reefs such as high-latitude and mesophotic areas. For these identified communities, I (2) further examine their relationship with environmental drivers, and (3) the roles they can play for reef fish species under global warming. In this context, the waters around Taiwan constitute an excellent natural laboratory to study those topics because the environment around Taiwan is very contrasted. Furthermore, I am also interested in marine biodiversity, and I would love to develop some side projects about it.
+
+***
+
+Publications in peer-reviewed journals:
+
+1.	**Lin YV**, Hsiao WV, W-J Chen, Denis V (2022) Habitat change and its consequences on reef fish specialization in biogeographic transitional zones. Journal of Biogeography. 49:1549-1561. [Link](https://onlinelibrary.wiley.com/doi/full/10.1111/jbi.14450)
+
+2.	De Palmas S, Denis V, Soto, D, **Lin YV**, Ho M-J, Chen CA (2021) Scleractinian diversity in the upper mesophotic zone of Ludao (Taiwan): a museum collection with new records from Taiwanese waters. Marine Biodiversity. 51:1-13. [Link](https://link.springer.com/article/10.1007/s12526-021-01210-y)
+
+3.	Hsiao WV, **Lin YV**, Lin H-T, Denis V (2021) Learning from differences: Abiotic determinism of benthic communities in Northern Taiwan. Marine Environmental Research. 170:105361. [Link](https://www.sciencedirect.com/science/article/pii/S0141113621001173)
+
+4.	Denis V, Fan T-Y, Hsaio WV, Hwang S-J, **Lin YV**, Nozawa Y. (2020) Ideal paper: Tracking the distribution of accretive reef communities across the Kuroshio current. Ecological Research. 35:595-598.  [Link](https://esj-journals.onlinelibrary.wiley.com/doi/full/10.1111/1440-1703.12128?af=R)
+
+5.	**Lin YV**, Denis V. (2019) Acknowledging the differences: number, characteristics, and distribution of marine coastal benthic communities in Taiwan. Ecosphere. 10:e02803.  [Link](https://esajournals.onlinelibrary.wiley.com/doi/10.1002/ecs2.2803)
+
+6.	Denis V, **Lin YTV**, Ho MJ (2019) A new association between goblet worms (Entoprocta) and xeniid corals (Cnidaria). Marine Biodiversity. 49:487-493. [Link](https://link.springer.com/article/10.1007/s12526-017-0766-4)
+
+7.	Denis V, Soto D, De Palmas S, **Lin YTV**, Benayahu Y, Huang YM, Liu SL, Chen JW, Chen Q, Sturaro N, Ho M-J, Su Y, Dai CF, Chen CA (2019) Mesophotic coral ecosystems in Taiwan. In: Loya Y, Puglise KA, Bridge T, editors. Mesophotic coral ecosystems of the world. Springer International Publishing AG. 
+
+8.	Denis V, Chen J-W, Chen Q, Hsieh YE, **Lin YV**, Wang C-W, Wang H-Y, Sturaro N (2019) Biogeography of functional trait diversity in the Taiwanese reef fish fauna. Ecology and Evolution. 9:522–532. 
+[Link](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.4771)
+
+Publications in scientific magazines:
+
+1.	**Lin YV** (2020) An underwater garden in the twilight zone - mesophotic coral ecosystem (In Chinese). Science Monthly. 51:70-73. [Link](https://www.scimonth.com.tw/archives/4327)
+
+
+
+***
+Last updated: 2022.8.18
+
+
+
+
+![Me as a diver :D](C:/Users/Vicky/OneDrive/R project/Randomforest/me.jpg){width=30%}
+
