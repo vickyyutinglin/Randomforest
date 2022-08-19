@@ -1,7 +1,6 @@
 name: "Stats & R!"
 output_dir: "."
 navbar:
-  search: true
   title: "🌊 Marine Ecology & Stats 🌊"
   left:
     - text: "About Me"
