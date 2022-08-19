@@ -352,19 +352,15 @@ After selecting the best hyperparameter setting and check its performance, we ca
 pred.env.5 <- data.frame(pred.env$light.5,pred.env$SST,pred.env$chl)
 colnames(pred.env.5) <- c('light','Chl_a','SST')
 pred.5 <- predict(rf.stpi.min, newdata=pred.env.5)
-
 pred.env.10 <- data.frame(pred.env$light.10,pred.env$SST,pred.env$chl)
 colnames(pred.env.10) <- c('light','Chl_a','SST')
 pred.10 <- predict(rf.stpi.min, newdata=pred.env.10)
-
 pred.env.15 <- data.frame(pred.env$light.15,pred.env$SST,pred.env$chl)
 colnames(pred.env.15) <- c('light','Chl_a','SST')
 pred.15 <- predict(rf.stpi.min, newdata=pred.env.15)
-
 pred.env.40 <- data.frame(pred.env$light.40,pred.env$SST,pred.env$chl)
 colnames(pred.env.40) <- c('light','Chl_a','SST')
 pred.40 <- predict(rf.stpi.min, newdata=pred.env.40)
-
 summary(pred.5)
 summary(pred.10)
 summary(pred.15)
@@ -410,7 +406,6 @@ Since I would like to use a grid map with 0.1 x 0.1 degree resolution to visuali
 ```{r, cache.extra = stpi, include = T, eval=T, message = F, results = 'hide', warning=FALSE} 
 taiwan.sf <- st_as_sf(taiwan) # tranform the sp file to sf file 
 cord.all <- cbind(cord, stpi.data, pred.stpi) # create a matrix with coordinate, observed, predicted cover for the sampling sites
-
 # creat a function to match the sampling sites and the grid system I created
 # I can specify the matix (with coordinate, depth, observed, predicted coral cover 
 # information), the depths and the grid resolution (degree) I would like to use
@@ -444,7 +439,6 @@ grid.match.depth <- function(matrix, depth, resolution){
   
   return(list(grid.over,summary(sp.grd),sp.grd)) # return the result
 }
-
 layer.5m <- grid.match.depth(cord.all,5,0.1) # extract the information of 5m
 sp.grd.5 <- layer.5m[[3]][1] # assign the 5m observed cover to the matrix
 sp.grd.5.pred <- layer.5m[[3]][2] # assign the 5m predicted cover to the matrix
@@ -457,21 +451,18 @@ sp.grd.15.pred <- layer.15m[[3]][2] # assign the 15m predicted cover to the matr
 layer.40m <- grid.match.depth(cord.all,40,0.1)  # extract the information of 40m
 sp.grd.40 <- layer.40m[[3]][1] # assign the 40m observed cover to the matrix
 sp.grd.40.pred <- layer.40m[[3]][2] # assign the 40m predicted cover to the matrix
-
 bb <- bbox(taiwan) # set up the boundary of this system to the same with the Taiwanese map
 cs <- c(1, 1)*0.1  # cell size 0.1 x 0.1 degree 
 cc <- bb[, 1] + (cs/2)  # cell offset
 cd <- ceiling(diff(t(bb))/cs)  # number of cells per direction
 grd <- GridTopology(cellcentre.offset=cc, cellsize=cs, cells.dim=cd) # cell topology
 sp_grd <- SpatialGridDataFrame(grd,data=data.frame(id=1:prod(cd)), proj4string='+proj=longlat +datum=WGS84 +no_defs')
-
 sp.grd.all <- SpatialGridDataFrame(grd,data=data.frame(coral.cover.5m = sp.grd.5$observed.cover, # create a spatial data frame with the observed cover for mapping
                                                        coral.cover.10m = sp.grd.10$observed.cover,
                                                        coral.cover.15m = sp.grd.15$observed.cover,
                                                        coral.cover.40m = sp.grd.40$observed.cover),
                                    proj4string='+proj=longlat +datum=WGS84 +no_defs')
 sp.grd.all.sf <- st_as_sf(sp.grd.all) # tranform the sp file to the sf file
-
 sp.grd.pred.all <- SpatialGridDataFrame(grd,data=data.frame(coral.cover.5m = sp.grd.5.pred$predicted.cover, # create a spatial data frame with the predicted cover in sampling sites for mapping
                                                             coral.cover.10m = sp.grd.10.pred$predicted.cover,
                                                             coral.cover.15m = sp.grd.15.pred$predicted.cover,
@@ -481,7 +472,6 @@ sp.grd.all.pred.sf <- st_as_sf(sp.grd.pred.all) # tranform the sp file to the sf
 # draw the maps
 col.pan <- c("lightblue","blue","green", "yellow","orange","red","white") # setup the color panel for mapping the cover
 tmap_mode("plot")
-
 tm_shape(sp.grd.all.sf) +
   tm_symbols(c("coral.cover.5m","coral.cover.10m","coral.cover.15m","coral.cover.40m"),
              size=1,breaks = c(seq(0,0.12,0.02),1),shape=15, 
@@ -519,7 +509,6 @@ sp.grd.pred.without <- SpatialGridDataFrame(grd,data=data.frame(Predicted.coral.
                                                                 Predicted.coral.cover.at.40m = pred.40.map),
                                             proj4string='+proj=longlat +datum=WGS84 +no_defs')
 sp.grd.pred.without.sf <- st_as_sf(sp.grd.pred.without) # tranform the sp file to the sf file
-
 # draw the maps for the predicted coral cover around Taiwan
 tm_shape(sp.grd.pred.without.sf) +
   tm_symbols(c("Predicted.coral.cover.at.5m","Predicted.coral.cover.at.10m", "Predicted.coral.cover.at.15m","Predicted.coral.cover.at.40m"),

@@ -4,18 +4,22 @@ output:
   html_document:
     theme: sandstone
     highlight: tango
-
 ---
+
+<style type="text/css">
+  body{
+  font-size: 15pt;
+}
+</style>
+
 ***
 
-[Research Gate](https://www.researchgate.net/profile/Yuting-Lin-7) | [Lab web](https://www.dipintothereef.com/)
+* 2018~present PhD Candidate in Marine Ecology at [Institute of Oceanography, National Taiwan University](http://www.oc.ntu.edu.tw/oceng/)
 
-PhD Candidate
+* 2016-2018 Master Degree in Marine Ecology at [Institute of Oceanography, National Taiwan University](http://www.oc.ntu.edu.tw/oceng/)
 
-Room 400, No. 1, Sec. 4, Roosevelt Rd., Institute of Oceanography, National Taiwan University, Taipei, 10617, Taiwan 
-
-+886-2-33661393
-
+* 2012-2016 Bachelor Degree in Marine Biotechnology at [Department of Marine Biotechnology and Resources, National Sun Yat-sen University](https://mbr.nsysu.edu.tw/?Lang=en)
+ 
 ***
 
 I am currently a PhD candidate in the Institute of Oceanography, National Taiwan University. I spent two years for my master's degree and four years for my PhD under the supervision of Dr. Vianney Denis.
@@ -48,10 +52,8 @@ Publications in scientific magazines:
 1.	**Lin YV** (2020) An underwater garden in the twilight zone - mesophotic coral ecosystem (In Chinese). Science Monthly. 51:70-73. [Link](https://www.scimonth.com.tw/archives/4327)
 
 
-
 ***
 Last updated: 2022.8.18
-
 
 
 
