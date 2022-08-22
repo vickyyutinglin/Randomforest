@@ -2,10 +2,11 @@
 title: "Diving spots in North Taiwan"
 output: 
   html_document:
+    css: styles.css
     theme: sandstone
     highlight: tango
-    
 ---
+
 
 ![Diving in Chaojing!](C:/Users/Vicky/OneDrive/R project/Randomforest/me.jpg){width=30%} 
 

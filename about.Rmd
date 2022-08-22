@@ -4,14 +4,8 @@ output:
   html_document:
     theme: sandstone
     highlight: tango
+    css: styles.css 
 ---
-
-<style type="text/css">
-  body{
-  font-size: 15pt;
-}
-</style>
-
 ***
 
 * 2018~present PhD Candidate in Marine Ecology at [Institute of Oceanography, National Taiwan University](http://www.oc.ntu.edu.tw/oceng/)
