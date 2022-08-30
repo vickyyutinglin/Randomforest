@@ -1,9 +1,72 @@
 /* Whole document: */
-body{
-  font-family: Helvetica;
+body,td{
   font-size: 16pt;
 }
+
 /* Headers */
-h1,h2,h3,h4,h5,h6{
+h1{
+  font-size: 28pt;
+  font-weight: bolder;
+}
+h2{
+  font-size: 26pt;
+  font-weight: bolder;
+}
+h3{
   font-size: 24pt;
+  font-weight: bolder;
+}
+h4{
+  font-size: 22pt;
+}
+h5{
+  font-size: 20pt;
+}
+h6{
+  font-size: 16pt;
+}
+
+r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+
+
+
+/* navi bar setting*/
+.navbar-default {
+  color: white ;
+  background-color: #141c25;
+}
+
+.navbar-default .navbar-nav>.open>a, 
+.navbar-default .navbar-nav>.active>a, 
+.dropdown-toggle:hover {
+  color: white ;
+  background-color: #141c25 ;
+}
+
+/* Dropdown menu color */
+.navbar-default .dropdown-menu {
+  color: white ;
+  background-color: #141c25;
+}
+
+/* Dropdown menu hover color */
+  .navbar-default .dropdown-menu>li>a:hover {
+    color: white ;
+    background-color: #141c25;
+  }
+
+/* Navbar Links when hovered*/
+.navbar-default .dropdown-menu>.active>a,
+.navbar-default .dropdown-menu>.open>a,
+.navbar-default .navbar-nav>.active>a:hover, 
+.navbar-default .navbar-nav:hover, 
+.navbar-default .navbar-nav>li>a:hover, 
+.navbar-brand:hover {
+  color: white ;
+  background-color: #141c25;
 }

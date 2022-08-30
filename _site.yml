@@ -3,24 +3,20 @@ output_dir: "."
 navbar:
   title: "🌊 Marine Ecology & Stats 🌊"
   left:
-  - text: "About Me"
-    href: about.html
   - text: "Stats"
     menu:
     - text: "Random Forest"
-      href: index.html
+      href: about.html
   - text: "Visited diving spots"
     menu:
     - text: "North Taiwan"
-      href: diving.north.html
-    
-      
+      href: diving.north.html    
+  - text: "About Me"
+    href: index.html
       
 output:
   html_document:
-    theme: sandstone
-    highlight: tango
-    include:
-      after_body: _footer.html ## Input html for a custom footer
+    includes:
+      after_body: _footer.html
     css: styles.css ## custom CSS
-    
+
